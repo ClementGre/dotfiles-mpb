@@ -14,6 +14,8 @@ git clone --depth 1 https://github.com/MikeMcQuaid/strap ~/Downloads/strap
 cd ~/Downloads/strap || exit
 bash strap.sh
 
+# Add home-brew to path
+
 # Installing Brewfile
 echo "> Installing Software from the Brewfile..."
 cd ~/Downloads/ || exit
@@ -37,4 +39,5 @@ mas install 937984704  # Amphetamine
 # Setting up files associations
 echo "> Setting up file associations..."
 cd "$CMD_DIR" || exit
+sudo chmod +x ./file-associations.sh
 ./file-associations.sh
