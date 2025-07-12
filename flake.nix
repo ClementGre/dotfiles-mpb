@@ -1,3 +1,5 @@
+# Rebuild: sudo darwin-rebuild switch --flake ~/GitHub/dotfiles-MBP/#mbp
+# Update: nix flake update
 {
   description = "Example nix-darwin system flake";
 
@@ -6,35 +8,48 @@
     nix-darwin.url = "github:nix-darwin/nix-darwin/master";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
+    mac-app-util.url = "github:hraban/mac-app-util";
 
     homebrew-core = {
       url = "github:homebrew/homebrew-core";
-      flake = true;
+      flake = false;
     };
     homebrew-cask = {
       url = "github:homebrew/homebrew-cask";
-      flake = true;
+      flake = false;
     };
   };
 
-  outputs = inputs@{ self, nix-darwin, nixpkgs, nix-homebrew, homebrew-core, homebrew-cask }:
+  outputs = inputs@{ self, nix-darwin, nixpkgs, nix-homebrew, mac-app-util, homebrew-core, homebrew-cask }:
   let
-    configuration = { pkgs, ... }: {
+    configuration = { pkgs, config, ... }: {
       # List packages installed in system profile. To search by name, run:
       # $ nix-env -qaP | grep wget
-      environment.systemPackages =
+      environment.systemPackages = with pkgs;
         [
             # Base tools
-            pkgs.neovim
-            pkgs.wget
+            neovim
+            wget
+            ffmpeg_6-full
 
-            pkgs.openconnect # Cisco AnyConnect client
-            pkgs.vpn-slice # easy and secure split-tunnel VPN setup
-            pkgs.tokei # Line of code statistics tool
+            openconnect # Cisco AnyConnect client
+            vpn-slice # easy and secure split-tunnel VPN setup
+            tokei # Line of code statistics tool
 
-
+            # GUI apps
+            audacity
+            inkscape-with-extensions
+            blender
+            spotify
         ];
 
+      fonts = {
+        packages = with pkgs; [
+          # (nerdfonts.override {fonts = ["JetBrainsMono"];})
+        ];
+      };
+
+      nixpkgs.config.allowUnfree = true;
       # Necessary for using flakes on this system.
       nix.settings.experimental-features = "nix-command flakes";
 
@@ -47,8 +62,9 @@
       # Used for backwards compatibility, please read the changelog before changing.
       # $ darwin-rebuild changelog
       system.stateVersion = 6;
-
       system.primaryUser = "clement";
+
+      security.pam.services.sudo_local.text = "auth sufficient pam_tid.so.2";
 
       # The platform the configuration will be used on.
       nixpkgs.hostPlatform = "aarch64-darwin";
@@ -69,12 +85,12 @@
           "figma"
           "mountain-duck"
           "twingate"
-          "audacity"
+          #"audacity"
           "firefox"
           "libreoffice"
           "nextcloud"
           "usbimager"
-          "balenaetcher"
+          #"balenaetcher"
           "font-computer-modern"
           "lm-studio"
           "notion"
@@ -90,7 +106,7 @@
           "font-sf-pro"
           "maccy"
           "windows-app"
-          "blender"
+          #"blender"
           "free-ruler"
           "mathpix-snipping-tool"
           "phoenix"
@@ -111,9 +127,9 @@
           "cyberduck"
           "iina"
           "microsoft-word"
-          "spotify"
+          #"spotify"
           "discord"
-          "inkscape"
+          #"inkscape"
           "minecraft"
           "sublime-text"
           #"docker"
@@ -124,15 +140,101 @@
 #        masApps = [
 #        ];
         onActivation.cleanup = "zap";
+        onActivation.autoUpdate = true;
+        onActivation.upgrade = true;
+      };
+
+      system = {
+        defaults = {
+          NSGlobalDomain = {
+            AppleFontSmoothing = 2;
+            NSAutomaticSpellingCorrectionEnabled = false;
+            NSAutomaticCapitalizationEnabled = false;
+            NSAutomaticPeriodSubstitutionEnabled = false;
+            AppleEnableSwipeNavigateWithScrolls = false;
+            AppleMeasurementUnits = "Centimeters";
+            AppleICUForce24HourTime = true;
+            "com.apple.mouse.tapBehavior" = 1;
+          };
+
+          dock = {
+            autohide = true;
+            autohide-delay = 0.05;
+            autohide-time-modifier = 0.5;
+            mru-spaces = false;
+            persistent-others = ["/Users/clement/Downloads"];
+            scroll-to-open = true;
+            minimize-to-application = true;
+            show-recents = false;
+            static-only = false;
+            tilesize = 48;
+            largesize = 68;
+            wvous-br-corner = 10;
+            wvous-bl-corner = 1;
+            wvous-tr-corner = 1;
+            wvous-tl-corner = 1;
+            persistent-apps = [
+              { app = "/System/Applications/Preview.app"; }
+              { spacer = { small = true; }; }
+              { app = "/System/Applications/Mail.app"; }
+              { app = "/Applications/Discord.app"; }
+              { app = "/Applications/Beeper Desktop.app"; }
+              { app = "/Applications/Element.app"; }
+              { app = "${pkgs.spotify}/Applications/Spotify.app"; }
+              { spacer = { small = true; }; }
+              { app = "/Applications/Anytype.app"; }
+              { app = "/Applications/BusyCal.app"; }
+              { app = "/Applications/Microsoft Word.app"; }
+              { app = "/Applications/Microsoft Excel.app"; }
+              { app = "/Applications/Microsoft PowerPoint.app"; }
+              { app = "/Applications/LibreOffice.app"; }
+              { app = "/Applications/reMarkable.app"; }
+              { app = "/Applications/Termius.app"; }
+              { app = "/System/Applications/Utilities/Terminal.app"; }
+              { spacer = { small = true; }; }
+              { app = "/Applications/Zen.app"; }
+              { spacer = { small = true; }; }
+              { app = "/Users/clement/Applications/IntelliJ IDEA Ultimate.app"; }
+              { app = "/Users/clement/Applications/PyCharm.app"; }
+              { app = "/Users/clement/Applications/CLion.app"; }
+            ];
+          };
+          finder = {
+            AppleShowAllExtensions = true;
+            FXEnableExtensionChangeWarning = false;
+            NewWindowTarget = "Other";
+            NewWindowTargetPath = "file:///Users/clement/Downloads";
+            #AppleShowAllFiles = true;
+            ShowPathbar = true;
+            CreateDesktop = false;
+          };
+          loginwindow = {
+            GuestEnabled = false;
+            DisableConsoleAccess = true;
+          };
+          trackpad = {
+            FirstClickThreshold = 0;
+            SecondClickThreshold = 0;
+            TrackpadThreeFingerDrag = true;
+          };
+          WindowManager = {
+            EnableTilingByEdgeDrag = false;
+          };
+          LaunchServices.LSQuarantine = false;
+          spaces.spans-displays = false;
+        };
+        keyboard = {
+        };
       };
     };
   in
   {
     # Build darwin flake using:
-    # $ darwin-rebuild build --flake .#mbp
-    darwinConfigurations."mbp" = nix-darwin.lib.darwinSystem {
+    # $ darwin-rebuild build --flake .
+    darwinConfigurations."MBP-Clement" = nix-darwin.lib.darwinSystem {
       modules = [
         configuration
+        mac-app-util.darwinModules.default
         nix-homebrew.darwinModules.nix-homebrew
         {
           nix-homebrew = {
