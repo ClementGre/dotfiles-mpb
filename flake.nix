@@ -1,4 +1,4 @@
-# Rebuild: sudo darwin-rebuild switch --flake ~/GitHub/dotfiles-MBP/#mbp
+# Rebuild: sudo darwin-rebuild switch --flake ~/GitHub/dotfiles-MBP/
 # Update: nix flake update
 {
   description = "Example nix-darwin system flake";
@@ -76,6 +76,9 @@
           "shpotify"
           "tailscale"
           "texlive"
+          "gexiv2"
+          "pkgconf"
+          "libpq"
         ];
         casks = [
           "aldente"
