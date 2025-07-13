@@ -31,6 +31,9 @@
             neovim
             wget
             ffmpeg_6-full
+            nix-index
+            cowsay
+            lolcat
 
             openconnect # Cisco AnyConnect client
             vpn-slice # easy and secure split-tunnel VPN setup
@@ -79,6 +82,7 @@
           "gexiv2"
           "pkgconf"
           "libpq"
+          "nvm"
         ];
         casks = [
           "aldente"
