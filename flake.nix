@@ -18,9 +18,13 @@
       url = "github:homebrew/homebrew-cask";
       flake = false;
     };
+    felixkratz = {
+      url = "github:FelixKratz/homebrew-formulae";
+      flake = false;
+    };
   };
 
-  outputs = inputs@{ self, nix-darwin, nixpkgs, nix-homebrew, mac-app-util, homebrew-core, homebrew-cask }:
+  outputs = inputs@{ self, nix-darwin, nixpkgs, nix-homebrew, mac-app-util, homebrew-core, homebrew-cask, felixkratz }:
   let
     configuration = { pkgs, config, ... }: {
       # List packages installed in system profile. To search by name, run:
@@ -34,10 +38,22 @@
             nix-index
             cowsay
             lolcat
+            python314
+            python310
+            neofetch
+            fortune
+            nmap
+            arp-scan
+            typst
 
             openconnect # Cisco AnyConnect client
             vpn-slice # easy and secure split-tunnel VPN setup
             tokei # Line of code statistics tool
+            libpq # PostgreSQL client library
+
+            skhd
+            yabai
+            jq
 
             # GUI apps
             audacity
@@ -48,7 +64,7 @@
 
       fonts = {
         packages = with pkgs; [
-          # (nerdfonts.override {fonts = ["JetBrainsMono"];})
+            inter
         ];
       };
 
@@ -68,6 +84,9 @@
       system.primaryUser = "clement";
 
       security.pam.services.sudo_local.text = "auth sufficient pam_tid.so.2";
+      security.sudo.extraConfig = ''
+          clement ALL=(ALL) NOPASSWD: /usr/bin/wdutil info
+        '';
 
       # The platform the configuration will be used on.
       nixpkgs.hostPlatform = "aarch64-darwin";
@@ -83,6 +102,8 @@
           "pkgconf"
           "libpq"
           "nvm"
+          "sketchybar"
+          "ifstat"
         ];
         casks = [
           "aldente"
@@ -143,6 +164,10 @@
           "jetbrains-toolbox"
           #"mongodb-compass"
           "termius"
+          "bepo"
+          # Fonts
+          "font-hack-nerd-font"
+          "sf-symbols"
         ];
 #        masApps = [
 #        ];
@@ -198,6 +223,7 @@
               { app = "/Applications/reMarkable.app"; }
               { app = "/Applications/Termius.app"; }
               { app = "/System/Applications/Utilities/Terminal.app"; }
+              { app = "/Applications/Sublime Text.app"; }
               { spacer = { small = true; }; }
               { app = "/Applications/Zen.app"; }
               { spacer = { small = true; }; }
@@ -255,6 +281,7 @@
             taps = {
               "homebrew/core" = homebrew-core;
               "homebrew/cask" = homebrew-cask;
+              "FelixKratz/homebrew-formulae" = felixkratz;
             };
 
             # Optional: Enable fully-declarative tap management
