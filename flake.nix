@@ -45,11 +45,13 @@
             nmap
             arp-scan
             typst
+            poetry
 
             openconnect # Cisco AnyConnect client
             vpn-slice # easy and secure split-tunnel VPN setup
             tokei # Line of code statistics tool
             libpq # PostgreSQL client library
+            probe-rs-tools # Rust ARM flashing tools
 
             skhd
             yabai
