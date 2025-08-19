@@ -60,7 +60,7 @@
             # GUI apps
             audacity
             inkscape-with-extensions
-            blender
+            #blender
             spotify
         ];
 
