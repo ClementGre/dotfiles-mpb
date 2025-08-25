@@ -6,6 +6,10 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nix-darwin.url = "github:nix-darwin/nix-darwin/master";
+    home-manager = {
+        url = "github:nix-community/home-manager";
+        inputs.nixpkgs.follows = "nixpkgs";
+    };
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
     mac-app-util.url = "github:hraban/mac-app-util";
@@ -18,13 +22,9 @@
       url = "github:homebrew/homebrew-cask";
       flake = false;
     };
-    felixkratz = {
-      url = "github:FelixKratz/homebrew-formulae";
-      flake = false;
-    };
   };
 
-  outputs = inputs@{ self, nix-darwin, nixpkgs, nix-homebrew, mac-app-util, homebrew-core, homebrew-cask, felixkratz }:
+  outputs = inputs@{ self, nix-darwin, nixpkgs, nix-homebrew, mac-app-util, homebrew-core, homebrew-cask, home-manager }:
   let
     configuration = { pkgs, config, ... }: {
       # List packages installed in system profile. To search by name, run:
@@ -40,22 +40,30 @@
             lolcat
             python314
             python310
-            neofetch
             fortune
             nmap
             arp-scan
             typst
-            poetry
+            poetry # Python dependency management
+            comma # Run nix packages without installing them with `, <package>`
+            fastfetch
+            fish # Shell
+            duti # Manage file associations
 
             openconnect # Cisco AnyConnect client
             vpn-slice # easy and secure split-tunnel VPN setup
             tokei # Line of code statistics tool
             libpq # PostgreSQL client library
-            probe-rs-tools # Rust ARM flashing tools
 
-            skhd
-            yabai
-            jq
+
+            sketchybar # Highly customizable status bar for macOS
+            skhd # Simple hotkey daemon for macOS
+            yabai # macOS window manager
+            jq # commandline json processor
+
+            libpq.pg_config
+
+            nodejs_24
 
             # GUI apps
             audacity
@@ -71,11 +79,13 @@
       };
 
       nixpkgs.config.allowUnfree = true;
+
       # Necessary for using flakes on this system.
       nix.settings.experimental-features = "nix-command flakes";
 
       # Enable alternative shell support in nix-darwin.
-      # programs.fish.enable = true;
+      programs.fish.enable = true;
+      programs.zsh.enable = true;
 
       # Set Git commit hash for darwin-version.
       system.configurationRevision = self.rev or self.dirtyRev or null;
@@ -100,11 +110,6 @@
           "shpotify"
           "tailscale"
           "texlive"
-          "gexiv2"
-          "pkgconf"
-          "libpq"
-          "nvm"
-          "sketchybar"
           "ifstat"
         ];
         casks = [
@@ -171,15 +176,33 @@
           "font-hack-nerd-font"
           "sf-symbols"
         ];
-#        masApps = [
-#        ];
+        masApps = {
+          reMarkableDesktop = 1276493162;
+          PixelmatorPro = 1289583905;
+          ColorSlurp = 1287239339;
+          Dropover = 1355679052;
+          ParallelsDesktop = 1085114709;
+          Vivid = 6443470555;
+          HandMirror = 1502839586;
+          LittleSnitchMini = 1629008763;
+          Amphetamine = 937984704;
+          #BarbeeHideMenuBarItems = 1548711022;
+          #ScreenBandit = 1043565969;
+          #SpoticaMenu = 570549457;
+        };
         onActivation.cleanup = "zap";
         onActivation.autoUpdate = true;
         onActivation.upgrade = true;
       };
 
-      system = {
-        defaults = {
+      launchd.user.agents.sketchybar = {
+                    path = [ pkgs.sketchybar ] ++ [ pkgs.sketchybar-app-font ] ++ [ config.environment.systemPath ];
+                    serviceConfig.ProgramArguments = [ "${pkgs.sketchybar}/bin/sketchybar" ] ++ ["--config" "${self}/files/sketchybar/sketchybarrc"];
+                    serviceConfig.KeepAlive = true;
+                    serviceConfig.RunAtLoad = true;
+                  };
+
+      system.defaults = {
           NSGlobalDomain = {
             AppleFontSmoothing = 2;
             NSAutomaticSpellingCorrectionEnabled = false;
@@ -258,20 +281,24 @@
           LaunchServices.LSQuarantine = false;
           spaces.spans-displays = false;
         };
-        keyboard = {
-        };
-      };
     };
   in
   {
     # Build darwin flake using:
     # $ darwin-rebuild build --flake .
-    darwinConfigurations."MBP-Clement" = nix-darwin.lib.darwinSystem {
+    darwinConfigurations."MBP-Clement" = nix-darwin.lib.darwinSystem  {
       modules = [
         configuration
         mac-app-util.darwinModules.default
         nix-homebrew.darwinModules.nix-homebrew
         {
+#          services = {
+#            sketchybar = {
+#              enable = true;
+#              #package = pkgs.sketchybar;
+#            };
+#            skhd.enable = true;
+#          };
           nix-homebrew = {
             enable = true;
             enableRosetta = true;
@@ -283,7 +310,6 @@
             taps = {
               "homebrew/core" = homebrew-core;
               "homebrew/cask" = homebrew-cask;
-              "FelixKratz/homebrew-formulae" = felixkratz;
             };
 
             # Optional: Enable fully-declarative tap management
@@ -291,6 +317,13 @@
             # With mutableTaps disabled, taps can no longer be added imperatively with `brew tap`.
             mutableTaps = false;
           };
+        }
+        home-manager.darwinModules.home-manager {
+          users.users.clement.home = /Users/clement;
+          home-manager.backupFileExtension = "backup";
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.users.clement = import ./home.nix;
         }
       ];
     };

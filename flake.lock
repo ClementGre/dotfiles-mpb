@@ -32,22 +32,6 @@
         "type": "github"
       }
     },
-    "felixkratz": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1738172733,
-        "narHash": "sha256-jggo/EU1IGQsB4q8FQ/6NXP3DEPi8hx/Y02cpnbh2FI=",
-        "owner": "FelixKratz",
-        "repo": "homebrew-formulae",
-        "rev": "aa79c1d02c7923c38a63114d41500109245b5d7f",
-        "type": "github"
-      },
-      "original": {
-        "owner": "FelixKratz",
-        "repo": "homebrew-formulae",
-        "type": "github"
-      }
-    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -83,6 +67,26 @@
       "original": {
         "id": "flake-utils",
         "type": "indirect"
+      }
+    },
+    "home-manager": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1756022458,
+        "narHash": "sha256-J1i35r4HfNDdPpwL0vOBaZopQudAUVtartEerc1Jryc=",
+        "owner": "nix-community",
+        "repo": "home-manager",
+        "rev": "9e3a33c0bcbc25619e540b9dfea372282f8a9740",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "home-manager",
+        "type": "github"
       }
     },
     "homebrew-cask": {
@@ -212,7 +216,7 @@
     },
     "root": {
       "inputs": {
-        "felixkratz": "felixkratz",
+        "home-manager": "home-manager",
         "homebrew-cask": "homebrew-cask",
         "homebrew-core": "homebrew-core",
         "mac-app-util": "mac-app-util",
