@@ -12,4 +12,4 @@ sketchybar --add item wifi right \
                            icon.font="Hack Nerd Font:Bold:18.0" \
                            icon.color=0xff0081FB \
                            label.drawing=off \
-                           click_script="osascript -e 'tell application \"System Events\" to tell (value of attribute \"AXExtrasMenuBar\" of process \"ControlCenter\" ) to click menu bar item 5'"
+                           click_script="osascript -e 'tell application \"System Events\" to tell (value of attribute \"AXExtrasMenuBar\" of process \"ControlCenter\" ) to click menu bar item 4'"

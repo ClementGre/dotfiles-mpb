@@ -60,7 +60,6 @@ void ax_select_menu_option(AXUIElementRef app, int id) {
 
 void ax_print_menu_options(AXUIElementRef app) {
   AXUIElementRef menubars_ref = NULL;
-  CFTypeRef menubar = NULL;
   CFArrayRef children_ref = NULL;
 
   AXError error = AXUIElementCopyAttributeValue(app,
@@ -79,10 +78,31 @@ void ax_print_menu_options(AXUIElementRef app) {
         CFTypeRef title = ax_get_title(item);
 
         if (title) {
-          uint32_t buffer_len = 2*CFStringGetLength(title);
-          char buffer[2*CFStringGetLength(title)];
-          CFStringGetCString(title, buffer, buffer_len, kCFStringEncodingUTF8);
-          printf("%s\n", buffer);
+          CFIndex strLen = CFStringGetLength((CFStringRef)title);
+          CFIndex maxLen = CFStringGetMaximumSizeForEncoding(strLen, kCFStringEncodingUTF8) + 1;
+          UInt8 *buffer = (UInt8 *)malloc(maxLen);
+          if (buffer) {
+            CFIndex usedBufLen = 0;
+            CFIndex converted = CFStringGetBytes(
+              (CFStringRef)title,
+              CFRangeMake(0, strLen),
+              kCFStringEncodingUTF8,
+              0, // lossByte
+              false, // isExternalRepresentation
+              buffer,
+              maxLen - 1,
+              &usedBufLen
+            );
+            if (converted > 0) {
+              buffer[usedBufLen] = '\0';
+              printf("%s\n", buffer);
+            } else {
+              printf("<unprintable>\n");
+            }
+            free(buffer);
+          } else {
+            printf("<memory error>\n");
+          }
           CFRelease(title);
         }
       }

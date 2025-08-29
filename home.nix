@@ -21,7 +21,7 @@
     ".zshrc".source = /Users/clement/GitHub/dotfiles-MBP/files/zsh/.zshrc;
     ".zlogin".source = /Users/clement/GitHub/dotfiles-MBP/files/zsh/.zlogin;
     ".config/fastfetch/config.jsonc".source = /Users/clement/GitHub/dotfiles-MBP/files/fastfetch/config.jsonc;
-    ".skhdrc".source = /Users/clement/GitHub/dotfiles-MBP/files/fastfetch/config.jsonc;
+    ".skhdrc".source = /Users/clement/GitHub/dotfiles-MBP/files/skhd/.skhdrc;
     ".config/sketchybar".source = /Users/clement/GitHub/dotfiles-MBP/files/sketchybar;
     ".config/sketchybar".executable = true;
 
@@ -40,9 +40,7 @@
       after = [ "writeBoundary" ];
       before = [ ];
       data = ''
-
        ${./scripts/file-associations.sh}
-
       '';
     };
 }

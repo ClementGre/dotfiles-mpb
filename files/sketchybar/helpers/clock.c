@@ -8,11 +8,23 @@ void callback(CFRunLoopTimerRef timer, void* info) {
   time(&current_time);
   setlocale(LC_TIME, "fr_FR.UTF-8");
 
+  struct tm* tm_info = localtime(&current_time);
+
+  // Custom French month abbreviations
+  const char* months[] = {
+    "jan.", "fév.", "mars", "avril", "mai", "juin",
+    "juil.", "août", "sept.", "oct.", "nov.", "déc."
+  };
+
   char buffer1[64];
-  strftime(buffer1, sizeof(buffer1), "%a. %d %b. %H:", localtime(&current_time));
+  // Format: weekday day month hour:
+  strftime(buffer1, sizeof(buffer1), "%a. %d", tm_info);
+  snprintf(buffer1 + strlen(buffer1), sizeof(buffer1) - strlen(buffer1), " %s %02d:",
+           months[tm_info->tm_mon],
+           tm_info->tm_hour);
 
   char buffer2[64];
-  strftime(buffer2, sizeof(buffer2), "%M:%S", localtime(&current_time));
+  strftime(buffer2, sizeof(buffer2), "%M:%S", tm_info);
 
 
   uint32_t message_size = sizeof(buffer1) + sizeof(buffer2) + 64;
