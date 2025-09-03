@@ -22,9 +22,13 @@
       url = "github:homebrew/homebrew-cask";
       flake = false;
     };
+    felixkratz = {
+      url = "github:FelixKratz/homebrew-formulae";
+      flake = false;
+    };
   };
 
-  outputs = inputs@{ self, nix-darwin, nixpkgs, nix-homebrew, mac-app-util, homebrew-core, homebrew-cask, home-manager }:
+  outputs = inputs@{ self, nix-darwin, nixpkgs, nix-homebrew, mac-app-util, homebrew-core, homebrew-cask, home-manager, felixkratz }:
   let
     configuration = { pkgs, config, ... }: {
       # List packages installed in system profile. To search by name, run:
@@ -56,7 +60,6 @@
             libpq # PostgreSQL client library
 
 
-            sketchybar # Highly customizable status bar for macOS
             skhd # Simple hotkey daemon for macOS
             yabai # macOS window manager
             jq # commandline json processor
@@ -111,6 +114,8 @@
           "tailscale"
           "texlive"
           "ifstat"
+          "ical-buddy"
+          "sketchybar"
         ];
         casks = [
           "aldente"
@@ -194,13 +199,6 @@
         onActivation.autoUpdate = true;
         onActivation.upgrade = true;
       };
-
-      launchd.user.agents.sketchybar = {
-                    path = [ pkgs.sketchybar ] ++ [ pkgs.sketchybar-app-font ] ++ [ config.environment.systemPath ];
-                    serviceConfig.ProgramArguments = [ "${pkgs.sketchybar}/bin/sketchybar" ] ++ ["--config" "${self}/files/sketchybar/sketchybarrc"];
-                    serviceConfig.KeepAlive = true;
-                    serviceConfig.RunAtLoad = true;
-                  };
 
       system.defaults = {
           NSGlobalDomain = {
@@ -310,6 +308,7 @@
             taps = {
               "homebrew/core" = homebrew-core;
               "homebrew/cask" = homebrew-cask;
+              "FelixKratz/homebrew-formulae" = felixkratz;
             };
 
             # Optional: Enable fully-declarative tap management

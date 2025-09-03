@@ -32,6 +32,22 @@
         "type": "github"
       }
     },
+    "felixkratz": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1738172733,
+        "narHash": "sha256-jggo/EU1IGQsB4q8FQ/6NXP3DEPi8hx/Y02cpnbh2FI=",
+        "owner": "FelixKratz",
+        "repo": "homebrew-formulae",
+        "rev": "aa79c1d02c7923c38a63114d41500109245b5d7f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "FelixKratz",
+        "repo": "homebrew-formulae",
+        "type": "github"
+      }
+    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -216,6 +232,7 @@
     },
     "root": {
       "inputs": {
+        "felixkratz": "felixkratz",
         "home-manager": "home-manager",
         "homebrew-cask": "homebrew-cask",
         "homebrew-core": "homebrew-core",

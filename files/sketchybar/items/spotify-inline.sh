@@ -31,7 +31,7 @@ spotify_artist=(
   y_offset=-3
   padding_left=0
   padding_right=0
-  width=0
+#  width=0
   label.font="SF Pro:Regular:9"
   click_script="open -a 'Spotify';"
 )
