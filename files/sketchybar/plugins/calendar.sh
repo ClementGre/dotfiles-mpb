@@ -8,13 +8,13 @@ format_time_delta() {
 
     if (( abs_seconds < 3600 )); then
         local minutes=$((abs_seconds / 60))
-        echo "dans $((seconds < 0 ? -minutes : minutes)) min"
+        echo "dans $((seconds < 0 ? -minutes : minutes)) min"
     elif (( abs_seconds < 86400 )); then
         local hours=$((abs_seconds / 3600))
-        echo "dans $((seconds < 0 ? -hours : hours)) h"
+        echo "dans $((seconds < 0 ? -hours : hours)) h"
     else
         local hours=$((abs_seconds / 3600))
-        echo "dans $((seconds < 0 ? -hours : hours)) h"
+        echo "dans $((seconds < 0 ? -hours : hours)) h"
 #        local days=$((abs_seconds / 86400))
 #        echo "dans $((seconds < 0 ? -days : days)) j"
     fi
@@ -26,7 +26,7 @@ get_calendar_color() {
         "INSA")
             echo "0xFFFFCC99"  # Light engineering orange
             ;;
-        "Routine")
+        "Personnel")
             echo "0xFF99CCFF"  # Light blue
             ;;
         "SIA")
@@ -86,7 +86,7 @@ current_epoch=$(date +%s)
 current_epoch_minutes=$((current_epoch / 60))  # Convert to minutes
 
 # Fetch calendar events using icalBuddy
-events=$(icalBuddy -n -li 4 -nrd -df "%Y-%m-%d" -tf "%H:%M:%S" eventsToday+1)
+events=$(icalBuddy -n -li 4 -nrd -df "%Y-%m-%d" -tf "%H:%M:%S" -iep title,datetime -ec Routine eventsToday+1)
 nb_events=$(echo "$events" | grep -c '^• ')
 # Split events into lines and process each event
 while IFS= read -r line; do
@@ -127,11 +127,11 @@ while IFS= read -r line; do
         if (( start_epoch <= current_epoch && current_epoch < end_epoch )); then
             is_current=true
             delta_seconds=$((end_epoch - current_epoch))
-            delta_text="Finis $(format_time_delta "$delta_seconds")"
+            delta_text="Fin $(format_time_delta "$delta_seconds")"
         else
             is_current=false
             delta_seconds=$((start_epoch - current_epoch))
-            delta_text="Commence $(format_time_delta "$delta_seconds")"
+            delta_text="Début $(format_time_delta "$delta_seconds")"
         fi
 
         color=$(get_calendar_color "$event_calendar")
