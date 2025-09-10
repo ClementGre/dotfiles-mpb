@@ -88,6 +88,14 @@ current_epoch_minutes=$((current_epoch / 60))  # Convert to minutes
 # Fetch calendar events using icalBuddy
 events=$(icalBuddy -n -li 4 -nrd -df "%Y-%m-%d" -tf "%H:%M:%S" -iep title,datetime -ec Routine eventsToday+1)
 nb_events=$(echo "$events" | grep -c '^• ')
+
+# If no events, clear labels and exit
+if [ "$nb_events" -eq 0 ]; then
+    sketchybar --set calendar_title label="" \
+               --set calendar_time label=""
+    exit 0
+fi
+
 # Split events into lines and process each event
 while IFS= read -r line; do
     # Skip empty lines or lines without a bullet (•)
