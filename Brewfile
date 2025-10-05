@@ -13,6 +13,7 @@ brew "nmap"
 cask "tailscale"
 cask "wireguard"
 brew "mas"
+brew "ffmpeg"
 
 # Dev
 brew "rustup"
