@@ -34,6 +34,7 @@
     "/run/current-system/sw/bin"
     "$HOME/.nix-profile/bin"
   ];
+
   programs.home-manager.enable = true;
 
     home.activation.fileAssociations = {
@@ -41,6 +42,14 @@
       before = [ ];
       data = ''
        ${./scripts/file-associations.sh}
+      '';
+    };
+
+    home.activation.startupCommands = {
+      after = [ "fileAssociations" ];
+      before = [ ];
+      data = ''
+        ${./scripts/startup-commands.sh}
       '';
     };
 }

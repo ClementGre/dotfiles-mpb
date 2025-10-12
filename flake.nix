@@ -53,6 +53,7 @@
             fastfetch
             fish # Shell
             duti # Manage file associations
+            maven
 
             openconnect # Cisco AnyConnect client
             vpn-slice # easy and secure split-tunnel VPN setup
@@ -232,9 +233,9 @@
               { app = "/System/Applications/Preview.app"; }
               { spacer = { small = true; }; }
               { app = "/System/Applications/Mail.app"; }
-              { app = "/Applications/Discord.app"; }
               { app = "/Applications/Beeper Desktop.app"; }
-              { app = "/Applications/Element.app"; }
+              { app = "/Applications/Discord.app"; }
+              #{ app = "/Applications/Element.app"; }
               { app = "${pkgs.spotify}/Applications/Spotify.app"; }
               { spacer = { small = true; }; }
               { app = "/Applications/Anytype.app"; }

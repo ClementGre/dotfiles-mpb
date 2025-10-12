@@ -2,22 +2,60 @@
 
 MAX_TITLE_LENGTH=20
 
+# Get current epoch time in seconds
+current_epoch=$(date +%s)
+current_epoch_minutes=$((current_epoch / 60))  # Convert to minutes
+
 format_time_delta() {
     local seconds=$1
-    local abs_seconds=${seconds#-}  # Remove negative sign for calculation
 
-    if (( abs_seconds < 3600 )); then
-        local minutes=$((abs_seconds / 60))
-        echo "dans $((seconds < 0 ? -minutes : minutes)) min"
-    elif (( abs_seconds < 86400 )); then
-        local hours=$((abs_seconds / 3600))
-        echo "dans $((seconds < 0 ? -hours : hours)) h"
-    else
-        local hours=$((abs_seconds / 3600))
-        echo "dans $((seconds < 0 ? -hours : hours)) h"
-#        local days=$((abs_seconds / 86400))
-#        echo "dans $((seconds < 0 ? -days : days)) j"
+    # Absolute value for relative display
+    local abs_seconds=${seconds#-}
+
+    # If delta > 6 hours, show exact time with day label
+    local hours=$((abs_seconds / 3600))
+    if (( hours > 6 )); then
+        # Determine target epoch from direction (future if seconds >= 0, past if < 0)
+        local target_epoch
+        if (( seconds >= 0 )); then
+            target_epoch=$((current_epoch + abs_seconds))
+        else
+            target_epoch=$((current_epoch - abs_seconds))
+        fi
+
+        # Day labels (macOS BSD date supports -v for date arithmetic)
+        local target_date today tomorrow day_after
+        target_date=$(date -r "$target_epoch" +%Y-%m-%d)
+        today=$(date +%Y-%m-%d)
+        tomorrow=$(date -v+1d +%Y-%m-%d)
+        day_after=$(date -v+2d +%Y-%m-%d)
+
+        local day_label
+        if [ "$target_date" = "$today" ]; then
+            day_label="aujourd’hui"
+        elif [ "$target_date" = "$tomorrow" ]; then
+            day_label="demain"
+        elif [ "$target_date" = "$day_after" ]; then
+            day_label="après-demain"
+        else
+            # Fallback to explicit date
+            day_label="le $(date -r "$target_epoch" +%d/%m)"
+        fi
+
+        local clock_time
+        clock_time=$(date -r "$target_epoch" +%H:%M)
+        if [ "$clock_time" = "00:00" ]; then
+          echo "$day_label"
+        else
+          echo "$day_label à $clock_time"
+        fi
+        return
     fi
+
+    # Relative display in h:mm (zero-padded minutes)
+    local rel_hours=$((abs_seconds / 3600))
+    local rel_minutes=$(((abs_seconds % 3600) / 60))
+    printf "dans %dh %02dmin\n" "$rel_hours" "$rel_minutes"
 }
 
 get_calendar_color() {
@@ -31,6 +69,9 @@ get_calendar_color() {
             ;;
         "SIA")
             echo "0xFFCC99FF"  # Light purple
+            ;;
+        Cal*)
+            echo "0xFFFF9D99"  # Light red
             ;;
         *)
             echo "0xFFFFFFFF"  # Default: white
@@ -46,6 +87,10 @@ truncate_title() {
         echo "$title"
     fi
 }
+
+# Fetch calendar events using icalBuddy
+events=$(icalBuddy -n -li 4 -nrd -df "%Y-%m-%d" -tf "%H:%M:%S" -iep title,datetime -ec Routine,"ADE Direct" eventsToday+1)
+nb_events=$(echo "$events" | grep -c '^• ')
 
 # Function to parse a date/time string into epoch seconds
 # Supports formats:
@@ -80,14 +125,6 @@ parse_date_to_epoch() {
 
     echo "$epoch_time"
 }
-
-# Get current epoch time in seconds
-current_epoch=$(date +%s)
-current_epoch_minutes=$((current_epoch / 60))  # Convert to minutes
-
-# Fetch calendar events using icalBuddy
-events=$(icalBuddy -n -li 4 -nrd -df "%Y-%m-%d" -tf "%H:%M:%S" -iep title,datetime -ec Routine eventsToday+1)
-nb_events=$(echo "$events" | grep -c '^• ')
 
 # If no events, clear labels and exit
 if [ "$nb_events" -eq 0 ]; then
@@ -131,12 +168,18 @@ while IFS= read -r line; do
         start_epoch_minutes=$((start_epoch / 60))
         end_epoch_minutes=$((end_epoch / 60))
 
-        # Check if event is current (start <= now < end)
         if (( start_epoch <= current_epoch && current_epoch < end_epoch )); then
+            # start <= now < end
             is_current=true
             delta_seconds=$((end_epoch - current_epoch))
             delta_text="Fin $(format_time_delta "$delta_seconds")"
+        elif (( start_epoch < current_epoch )); then
+            # start < now >= end
+            is_current=true
+            delta_seconds=$((current_epoch - start_epoch))
+            delta_text="Depuis $(format_time_delta -$delta_seconds)"
         else
+            # now < start
             is_current=false
             delta_seconds=$((start_epoch - current_epoch))
             delta_text="Début $(format_time_delta "$delta_seconds")"
