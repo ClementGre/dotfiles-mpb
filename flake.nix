@@ -1,4 +1,4 @@
-# Rebuild: sudo darwin-rebuild switch --flake ~/GitHub/dotfiles-MBP/
+# Rebuild: sudo darwin-rebuild switch --impure --flake ~/GitHub/dotfiles-MBP/
 # Update: nix flake update
 {
   description = "Example nix-darwin system flake";
@@ -59,6 +59,7 @@
             vpn-slice # easy and secure split-tunnel VPN setup
             tokei # Line of code statistics tool
             libpq # PostgreSQL client library
+            arduino-cli # Command line interface for Arduino
 
 
             skhd # Simple hotkey daemon for macOS
@@ -187,7 +188,7 @@
           PixelmatorPro = 1289583905;
           ColorSlurp = 1287239339;
           Dropover = 1355679052;
-          ParallelsDesktop = 1085114709;
+          #ParallelsDesktop = 1085114709;
           Vivid = 6443470555;
           HandMirror = 1502839586;
           LittleSnitchMini = 1629008763;
