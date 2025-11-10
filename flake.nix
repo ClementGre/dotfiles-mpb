@@ -61,7 +61,6 @@
             libpq # PostgreSQL client library
             arduino-cli # Command line interface for Arduino
 
-
             skhd # Simple hotkey daemon for macOS
             yabai # macOS window manager
             jq # commandline json processor
@@ -69,6 +68,7 @@
             libpq.pg_config
 
             nodejs_24
+            opam
 
             # GUI apps
             audacity
