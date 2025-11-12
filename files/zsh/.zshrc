@@ -130,3 +130,6 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 export PATH="$PATH:/Applications/microchip/xc8/v3.00/bin"
+
+# Opam
+[[ ! -r '/Users/clement/.opam/opam-init/init.zsh' ]] || source '/Users/clement/.opam/opam-init/init.zsh' > /dev/null 2> /dev/null

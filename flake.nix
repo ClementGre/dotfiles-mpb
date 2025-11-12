@@ -60,6 +60,7 @@
             tokei # Line of code statistics tool
             libpq # PostgreSQL client library
             arduino-cli # Command line interface for Arduino
+            mysql84
 
             skhd # Simple hotkey daemon for macOS
             yabai # macOS window manager
