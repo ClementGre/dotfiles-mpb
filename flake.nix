@@ -73,7 +73,6 @@
 
             # GUI apps
             audacity
-            inkscape-with-extensions
             #blender
             spotify
         ];
@@ -133,6 +132,7 @@
           "libreoffice"
           "nextcloud"
           "usbimager"
+          "inkscape"
           #"balenaetcher"
           "font-computer-modern"
           "lm-studio"
