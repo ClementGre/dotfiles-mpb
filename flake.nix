@@ -152,7 +152,7 @@
           #"blender"
           "free-ruler"
           "mathpix-snipping-tool"
-          "phoenix"
+          #"phoenix"
           "zen"
           "busycal"
           "hammerspoon"
