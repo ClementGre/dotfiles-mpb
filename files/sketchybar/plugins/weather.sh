@@ -1,6 +1,8 @@
 #!/bin/sh
 # Wait for system to wake up and localization services to be available
-sleep 10
+if [ "$SENDER" = "system_woke" ]; then
+  sleep 10
+fi
 
 # Get weather stats from the shortcut
 WEATHER_DATA="$(shortcuts run "WeatherStats")"

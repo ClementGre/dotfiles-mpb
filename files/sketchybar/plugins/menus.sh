@@ -16,6 +16,7 @@ EXISTING_ITEMS=($(sketchybar --query bar | jq -r '.items[] | select(startswith("
 
 NEW_ITEMS=()
 for i in "${!MENUS[@]}"; do
+  if [ "$i" -ge 9 ]; then break; fi
   NEW_ITEMS+=("menu_$i")
 done
 
@@ -51,6 +52,7 @@ CMDS+="click_script=\"./helpers/bin/menus -s 1\" "
 # Other menus
 for i in "${!MENUS[@]}"; do
   if [ "$i" -eq 0 ]; then continue; fi
+  if [ "$i" -ge 9 ]; then break; fi
   idx=$((i+1))
   label="${MENUS[$i]:0:4}"
   item="menu_$i"
