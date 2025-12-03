@@ -185,7 +185,7 @@
           "sf-symbols"
         ];
         masApps = {
-          reMarkableDesktop = 1276493162;
+          #reMarkableDesktop = 1276493162;
           PixelmatorPro = 1289583905;
           ColorSlurp = 1287239339;
           Dropover = 1355679052;
@@ -246,7 +246,7 @@
               { app = "/Applications/Microsoft Excel.app"; }
               { app = "/Applications/Microsoft PowerPoint.app"; }
               { app = "/Applications/LibreOffice.app"; }
-              { app = "/Applications/reMarkable.app"; }
+              #{ app = "/Applications/reMarkable.app"; }
               { app = "/Applications/Termius.app"; }
               { app = "/System/Applications/Utilities/Terminal.app"; }
               { app = "/Applications/Sublime Text.app"; }
