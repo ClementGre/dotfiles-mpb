@@ -70,6 +70,7 @@
 
             nodejs_24
             opam
+            swi-prolog
 
             # GUI apps
             audacity

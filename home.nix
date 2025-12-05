@@ -24,7 +24,6 @@
     ".skhdrc".source = /Users/clement/GitHub/dotfiles-MBP/files/skhd/.skhdrc;
     ".config/sketchybar".source = /Users/clement/GitHub/dotfiles-MBP/files/sketchybar;
     ".config/sketchybar".executable = true;
-
   };
 
   home.sessionVariables = {
