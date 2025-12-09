@@ -12,7 +12,7 @@ IFS='!' read -r NONE CONDITION TEMPERATURE <<< "$WEATHER_DATA"
 
 # Switch/case for weather conditions and corresponding icons
 case "$CONDITION" in
-  "Ensoleillé"|"Clair")
+  "Ensoleillé"|"Clair"|"Temps clair")
     ICON="☀️"
     ;;
   "Nuageux")
