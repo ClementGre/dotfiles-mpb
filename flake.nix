@@ -54,6 +54,7 @@
             fish # Shell
             duti # Manage file associations
             maven
+            just
 
             openconnect # Cisco AnyConnect client
             vpn-slice # easy and secure split-tunnel VPN setup
