@@ -66,7 +66,6 @@
             skhd # Simple hotkey daemon for macOS
             yabai # macOS window manager
             jq # commandline json processor
-            R
 
             libpq.pg_config
 
