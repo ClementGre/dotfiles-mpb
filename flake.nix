@@ -65,6 +65,7 @@
             skhd # Simple hotkey daemon for macOS
             yabai # macOS window manager
             jq # commandline json processor
+            R
 
             libpq.pg_config
 
@@ -254,7 +255,7 @@
               { spacer = { small = true; }; }
               { app = "/Applications/Zen.app"; }
               { spacer = { small = true; }; }
-              { app = "/Users/clement/Applications/IntelliJ IDEA Ultimate.app"; }
+              { app = "/Users/clement/Applications/IntelliJ IDEA.app"; }
               { app = "/Users/clement/Applications/PyCharm.app"; }
               { app = "/Users/clement/Applications/CLion.app"; }
             ];
