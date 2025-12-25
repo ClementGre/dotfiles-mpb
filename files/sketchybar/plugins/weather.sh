@@ -18,7 +18,7 @@ case "$CONDITION" in
   "Nuageux")
     ICON="☁️"
     ;;
-  "Pluie"|"Averses")
+  "Pluie"|"Averses"|"Bruine")
     ICON="🌧️"
     ;;
   "Orageux"|"Orages")
@@ -33,7 +33,7 @@ case "$CONDITION" in
   "Venteux"|"Windy")
     ICON="💨"
     ;;
-  "Nuages prédominants"|"Belles éclaircies"|"Partiellement nuageux")
+  "Nuages prédominants"|"Belles éclaircies"|"Partiellement nuageux"|"Ciel plutôt dégagé")
     ICON="🌤️"
     ;;
   *)
