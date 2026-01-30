@@ -53,13 +53,23 @@ if [ "$CHARGING" != "" ]; then # Plugged in
               icon.width=4
   fi
 else # Unplugged
-  # Uncharging
-  sketchybar --set "battery-icon" \
-      label.font="SF Pro:Black:10" \
-      label="􀅽" \
-      label.padding_right=17 \
-      icon.color=0xFFE02020 \
-      icon.width=10
+  if [ "$STATE" = "Calibration" ]; then
+      # Calibration
+      sketchybar --set "battery-icon" \
+                label.font="SF Pro:Heavy:10" \
+                label="􀅽􀯛" \
+                label.padding_right=12 \
+                icon.color=0xFFFF0ECF \
+                icon.width=4
+  else
+    # Uncharging
+    sketchybar --set "battery-icon" \
+        label.font="SF Pro:Black:10" \
+        label="􀅽" \
+        label.padding_right=17 \
+        icon.color=0xFFE02020 \
+        icon.width=10
+    fi
 fi
 
 sketchybar --set "battery-percent" label="${PERCENTAGE}%"
