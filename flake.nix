@@ -177,6 +177,7 @@
           #"inkscape"
           "minecraft"
           "sublime-text"
+          "localsend"
           #"docker"
           "jetbrains-toolbox"
           #"mongodb-compass"
