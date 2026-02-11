@@ -66,6 +66,7 @@
             skhd # Simple hotkey daemon for macOS
             yabai # macOS window manager
             jq # commandline json processor
+            fswatch # filesystem file watch
 
             libpq.pg_config
 
@@ -120,6 +121,7 @@
           "ifstat"
           "ical-buddy"
           "sketchybar"
+          #"openconnect"
         ];
         casks = [
           "aldente"

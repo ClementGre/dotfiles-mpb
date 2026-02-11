@@ -18,7 +18,7 @@ void callback(CFRunLoopTimerRef timer, void* info) {
 
   char buffer1[64];
   // Format: weekday day month hour:
-  strftime(buffer1, sizeof(buffer1), "%a. %d", tm_info);
+  strftime(buffer1, sizeof(buffer1), "%a %d", tm_info);
   snprintf(buffer1 + strlen(buffer1), sizeof(buffer1) - strlen(buffer1), " %s %02d:",
            months[tm_info->tm_mon],
            tm_info->tm_hour);
