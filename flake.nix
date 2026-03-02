@@ -43,7 +43,6 @@
             cowsay
             lolcat
             python314
-            python310
             fortune
             nmap
             arp-scan
