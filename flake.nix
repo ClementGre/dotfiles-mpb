@@ -67,6 +67,7 @@
             yabai # macOS window manager
             jq # commandline json processor
             fswatch # filesystem file watch
+            tree
 
             libpq.pg_config
 
@@ -122,6 +123,8 @@
           "ical-buddy"
           "sketchybar"
           #"openconnect"
+          "antlr"
+          "antlr4-cpp-runtime"
         ];
         casks = [
           "aldente"
@@ -188,6 +191,7 @@
           # Fonts
           "font-hack-nerd-font"
           "sf-symbols"
+          "losslesscut"
         ];
         masApps = {
           #reMarkableDesktop = 1276493162;

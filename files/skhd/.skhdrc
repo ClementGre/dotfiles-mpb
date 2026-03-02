@@ -105,19 +105,19 @@
 #    "qutebrowser"
 # ]
 
-# i o p ^ (d l j z) for Mail, Beeper, Discord, Spotify
+# u i o p (m d ’ y) for Mail, Beeper, Discord, Spotify
 ctrl + alt - 0x20 : open -a Mail
 ctrl + alt - 0x22 : open -a "Beeper Desktop"
 ctrl + alt - 0x1F : open -a Discord
 ctrl + alt - 0x23 : sleep .4 && open -a Spotify
 
-# j k l m (t s r m) for Space 2, Zen, Space 4, IntelliJ IDEA
+# j k l m (r t i u) for Space 2, Zen, Space 4, IntelliJ IDEA
 # Space 2 shortcut done with Karabiner-Elements to (remap to ctrl + 2)
 ctrl + alt - 0x28 : open -a Zen
 # Space 2 shortcut done with Karabiner-Elements to (remap to ctrl + 4)
 ctrl + alt - 0x29 : open -a "IntelliJ IDEA Ultimate"
 
-# , ; : + (q g h f) for Finder, BusyCal, Anytype, Aperçu
+# , ; : + (h g , k) for Finder, BusyCal, Anytype, Aperçu
 ctrl + alt - 0x2E : open -a Finder
 ctrl + alt - 0x2B : open -a Preview
 ctrl + alt - 0x2F : open -a Anytype
