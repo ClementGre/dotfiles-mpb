@@ -5,7 +5,7 @@ sketchybar --add item volume-icon right \
            --set volume-icon \
                         label.drawing=off \
                         icon.padding_left=0 \
-                        click_script="open -a 'Audio MIDI Setup'" \
+                        click_script="osascript -e 'tell application \"System Events\" to tell (value of attribute \"AXExtrasMenuBar\" of process \"ControlCenter\" ) to click menu bar item 3'" \
 
 sketchybar --add item volume right \
            --set volume script="$PLUGIN_DIR/volume.sh" \

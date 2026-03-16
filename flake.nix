@@ -240,30 +240,24 @@
             wvous-tr-corner = 1;
             wvous-tl-corner = 1;
             persistent-apps = [
-              { app = "/System/Applications/Preview.app"; }
-              { spacer = { small = true; }; }
-              { app = "/System/Applications/Mail.app"; }
-              { app = "/Applications/Beeper Desktop.app"; }
-              { app = "/Applications/Discord.app"; }
-              #{ app = "/Applications/Element.app"; }
-              { app = "${pkgs.spotify}/Applications/Spotify.app"; }
-              { spacer = { small = true; }; }
-              { app = "/Applications/Anytype.app"; }
-              { app = "/Applications/BusyCal.app"; }
-              { app = "/Applications/Microsoft Word.app"; }
-              { app = "/Applications/Microsoft Excel.app"; }
-              { app = "/Applications/Microsoft PowerPoint.app"; }
-              { app = "/Applications/LibreOffice.app"; }
-              #{ app = "/Applications/reMarkable.app"; }
-              { app = "/Applications/Termius.app"; }
-              { app = "/System/Applications/Utilities/Terminal.app"; }
-              { app = "/Applications/Sublime Text.app"; }
-              { spacer = { small = true; }; }
-              { app = "/Applications/Zen.app"; }
-              { spacer = { small = true; }; }
-              { app = "/Users/clement/Applications/IntelliJ IDEA.app"; }
-              { app = "/Users/clement/Applications/PyCharm.app"; }
-              { app = "/Users/clement/Applications/CLion.app"; }
+              "/System/Applications/Preview.app"
+              "/System/Applications/Mail.app"
+              "/Applications/Beeper Desktop.app"
+              "/Applications/Discord.app"
+              "${pkgs.spotify}/Applications/Spotify.app"
+              "/Applications/Anytype.app"
+              "/Applications/BusyCal.app"
+              "/Applications/Microsoft Word.app"
+              "/Applications/Microsoft Excel.app"
+              "/Applications/Microsoft PowerPoint.app"
+              "/Applications/LibreOffice.app"
+              "/Applications/Termius.app"
+              "/System/Applications/Utilities/Terminal.app"
+              "/Applications/Sublime Text.app"
+              "/Applications/Zen.app"
+              "/Users/clement/Applications/IntelliJ IDEA.app"
+              "/Users/clement/Applications/PyCharm.app"
+              "/Users/clement/Applications/CLion.app"
             ];
           };
           finder = {
