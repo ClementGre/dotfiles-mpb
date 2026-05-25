@@ -1,5 +1,3 @@
-# Rebuild: sudo darwin-rebuild switch --impure --flake ~/GitHub/dotfiles-MBP/
-# Update: nix flake update
 {
   description = "Example nix-darwin system flake";
 
@@ -186,11 +184,12 @@
           "jetbrains-toolbox"
           #"mongodb-compass"
           "termius"
-          "bepo"
+          #"bepo"
           # Fonts
           "font-hack-nerd-font"
           "sf-symbols"
           "losslesscut"
+          "zed"
         ];
         masApps = {
           #reMarkableDesktop = 1276493162;
