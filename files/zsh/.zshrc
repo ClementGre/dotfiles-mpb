@@ -82,7 +82,6 @@ plugins=(
   command-not-found
   docker
   docker-compose
-  dotenv
   emoji
   kubectl
   npm
@@ -133,3 +132,6 @@ export PATH="$PATH:/Applications/microchip/xc8/v3.00/bin"
 
 # Opam
 [[ ! -r '/Users/clement/.opam/opam-init/init.zsh' ]] || source '/Users/clement/.opam/opam-init/init.zsh' > /dev/null 2> /dev/null
+
+# libpq
+export PATH="/opt/homebrew/opt/libpq/bin:$PATH"

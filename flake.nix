@@ -5,8 +5,8 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nix-darwin.url = "github:nix-darwin/nix-darwin/master";
     home-manager = {
-        url = "github:nix-community/home-manager";
-        inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
@@ -26,13 +26,25 @@
     };
   };
 
-  outputs = inputs@{ self, nix-darwin, nixpkgs, nix-homebrew, mac-app-util, homebrew-core, homebrew-cask, home-manager, felixkratz }:
-  let
-    configuration = { pkgs, config, ... }: {
-      # List packages installed in system profile. To search by name, run:
-      # $ nix-env -qaP | grep wget
-      environment.systemPackages = with pkgs;
-        [
+  outputs =
+    inputs@{
+      self,
+      nix-darwin,
+      nixpkgs,
+      nix-homebrew,
+      mac-app-util,
+      homebrew-core,
+      homebrew-cask,
+      home-manager,
+      felixkratz,
+    }:
+    let
+      configuration =
+        { pkgs, config, ... }:
+        {
+          # List packages installed in system profile. To search by name, run:
+          # $ nix-env -qaP | grep wget
+          environment.systemPackages = with pkgs; [
             # Base tools
             neovim
             wget
@@ -52,6 +64,7 @@
             duti # Manage file associations
             maven
             just
+            libpq
 
             openconnect # Cisco AnyConnect client
             vpn-slice # easy and secure split-tunnel VPN setup
@@ -65,6 +78,7 @@
             jq # commandline json processor
             fswatch # filesystem file watch
             tree
+            nil # Nix language server
 
             libpq.pg_config
 
@@ -76,259 +90,260 @@
             audacity
             #blender
             spotify
-        ];
+          ];
 
-      fonts = {
-        packages = with pkgs; [
-            inter
-        ];
-      };
-
-      nixpkgs.config.allowUnfree = true;
-
-      # Necessary for using flakes on this system.
-      nix.settings.experimental-features = "nix-command flakes";
-
-      # Enable alternative shell support in nix-darwin.
-      programs.fish.enable = true;
-      programs.zsh.enable = true;
-
-      # Set Git commit hash for darwin-version.
-      system.configurationRevision = self.rev or self.dirtyRev or null;
-
-      # Used for backwards compatibility, please read the changelog before changing.
-      # $ darwin-rebuild changelog
-      system.stateVersion = 6;
-      system.primaryUser = "clement";
-
-      security.pam.services.sudo_local.text = "auth sufficient pam_tid.so.2";
-      security.sudo.extraConfig = ''
-          clement ALL=(ALL) NOPASSWD: /usr/bin/wdutil info
-        '';
-
-      # The platform the configuration will be used on.
-      nixpkgs.hostPlatform = "aarch64-darwin";
-
-      homebrew = {
-        enable = true;
-        brews = [
-          "mas"
-          "shpotify"
-          "tailscale"
-          "texlive"
-          "ifstat"
-          "ical-buddy"
-          "sketchybar"
-          #"openconnect"
-          "antlr"
-          "antlr4-cpp-runtime"
-        ];
-        casks = [
-          "aldente"
-          "docker-desktop"
-          "karabiner-elements"
-          "the-unarchiver"
-          "figma"
-          "mountain-duck"
-          "twingate"
-          #"audacity"
-          "firefox"
-          "libreoffice"
-          "nextcloud"
-          "usbimager"
-          "inkscape"
-          #"balenaetcher"
-          "font-computer-modern"
-          "lm-studio"
-          "notion"
-          "visual-studio-code"
-          "beeper"
-          "font-jetbrains-mono"
-          "logoer"
-          "numi"
-          "font-new-computer-modern"
-          "obsidian"
-          "warp"
-          "bitwarden"
-          "font-sf-pro"
-          "maccy"
-          "windows-app"
-          #"blender"
-          "free-ruler"
-          "mathpix-snipping-tool"
-          #"phoenix"
-          "zen"
-          "busycal"
-          "hammerspoon"
-          "microsoft-auto-update"
-          "postman"
-          "chromium"
-          #"handbrake"
-          "microsoft-excel"
-          "qflipper"
-          "zoom"
-          "coolterm"
-          "handbrake-app"
-          "microsoft-powerpoint"
-          "rectangle"
-          "cyberduck"
-          "iina"
-          "microsoft-word"
-          #"spotify"
-          "discord"
-          #"inkscape"
-          "minecraft"
-          "sublime-text"
-          "localsend"
-          #"docker"
-          "jetbrains-toolbox"
-          #"mongodb-compass"
-          "termius"
-          #"bepo"
-          # Fonts
-          "font-hack-nerd-font"
-          "sf-symbols"
-          "losslesscut"
-          "zed"
-        ];
-        masApps = {
-          #reMarkableDesktop = 1276493162;
-          PixelmatorPro = 1289583905;
-          ColorSlurp = 1287239339;
-          Dropover = 1355679052;
-          #ParallelsDesktop = 1085114709;
-          Vivid = 6443470555;
-          HandMirror = 1502839586;
-          LittleSnitchMini = 1629008763;
-          Amphetamine = 937984704;
-          #BarbeeHideMenuBarItems = 1548711022;
-          #ScreenBandit = 1043565969;
-          #SpoticaMenu = 570549457;
-        };
-        onActivation.cleanup = "zap";
-        onActivation.autoUpdate = true;
-        onActivation.upgrade = true;
-      };
-
-      system.defaults = {
-          NSGlobalDomain = {
-            AppleFontSmoothing = 2;
-            NSAutomaticSpellingCorrectionEnabled = false;
-            NSAutomaticCapitalizationEnabled = false;
-            NSAutomaticPeriodSubstitutionEnabled = false;
-            AppleEnableSwipeNavigateWithScrolls = false;
-            AppleMeasurementUnits = "Centimeters";
-            AppleICUForce24HourTime = true;
-            "com.apple.mouse.tapBehavior" = 1;
-          };
-
-          dock = {
-            autohide = true;
-            autohide-delay = 0.05;
-            autohide-time-modifier = 0.5;
-            mru-spaces = false;
-            persistent-others = ["/Users/clement/Downloads"];
-            scroll-to-open = true;
-            minimize-to-application = true;
-            show-recents = false;
-            static-only = false;
-            tilesize = 48;
-            largesize = 68;
-            wvous-br-corner = 10;
-            wvous-bl-corner = 1;
-            wvous-tr-corner = 1;
-            wvous-tl-corner = 1;
-            persistent-apps = [
-              "/System/Applications/Preview.app"
-              "/System/Applications/Mail.app"
-              "/Applications/Beeper Desktop.app"
-              "/Applications/Discord.app"
-              "${pkgs.spotify}/Applications/Spotify.app"
-              "/Applications/Anytype.app"
-              "/Applications/BusyCal.app"
-              "/Applications/Microsoft Word.app"
-              "/Applications/Microsoft Excel.app"
-              "/Applications/Microsoft PowerPoint.app"
-              "/Applications/LibreOffice.app"
-              "/Applications/Termius.app"
-              "/System/Applications/Utilities/Terminal.app"
-              "/Applications/Sublime Text.app"
-              "/Applications/Zen.app"
-              "/Users/clement/Applications/IntelliJ IDEA.app"
-              "/Users/clement/Applications/PyCharm.app"
-              "/Users/clement/Applications/CLion.app"
+          fonts = {
+            packages = with pkgs; [
+              inter
             ];
           };
-          finder = {
-            AppleShowAllExtensions = true;
-            FXEnableExtensionChangeWarning = false;
-            NewWindowTarget = "Other";
-            NewWindowTargetPath = "file:///Users/clement/Downloads";
-            #AppleShowAllFiles = true;
-            ShowPathbar = true;
-            CreateDesktop = false;
-          };
-          loginwindow = {
-            GuestEnabled = false;
-            DisableConsoleAccess = true;
-          };
-          trackpad = {
-            FirstClickThreshold = 0;
-            SecondClickThreshold = 0;
-            TrackpadThreeFingerDrag = true;
-          };
-          WindowManager = {
-            EnableTilingByEdgeDrag = false;
-          };
-          LaunchServices.LSQuarantine = false;
-          spaces.spans-displays = false;
-        };
-    };
-  in
-  {
-    # Build darwin flake using:
-    # $ darwin-rebuild build --flake .
-    darwinConfigurations."MBP-Clement" = nix-darwin.lib.darwinSystem  {
-      modules = [
-        configuration
-        mac-app-util.darwinModules.default
-        nix-homebrew.darwinModules.nix-homebrew
-        {
-#          services = {
-#            sketchybar = {
-#              enable = true;
-#              #package = pkgs.sketchybar;
-#            };
-#            skhd.enable = true;
-#          };
-          nix-homebrew = {
+
+          nixpkgs.config.allowUnfree = true;
+
+          # Necessary for using flakes on this system.
+          nix.settings.experimental-features = "nix-command flakes";
+
+          # Enable alternative shell support in nix-darwin.
+          programs.fish.enable = true;
+          programs.zsh.enable = true;
+
+          # Set Git commit hash for darwin-version.
+          system.configurationRevision = self.rev or self.dirtyRev or null;
+
+          # Used for backwards compatibility, please read the changelog before changing.
+          # $ darwin-rebuild changelog
+          system.stateVersion = 6;
+          system.primaryUser = "clement";
+
+          security.pam.services.sudo_local.text = "auth sufficient pam_tid.so.2";
+          security.sudo.extraConfig = ''
+            clement ALL=(ALL) NOPASSWD: /usr/bin/wdutil info
+          '';
+
+          # The platform the configuration will be used on.
+          nixpkgs.hostPlatform = "aarch64-darwin";
+
+          homebrew = {
             enable = true;
-            enableRosetta = true;
-            user = "clement";
+            brews = [
+              "mas"
+              "shpotify"
+              "tailscale"
+              "texlive"
+              "ifstat"
+              "ical-buddy"
+              "sketchybar"
+              #"openconnect"
+              "antlr"
+              "antlr4-cpp-runtime"
+            ];
+            casks = [
+              "aldente"
+              "docker-desktop"
+              "karabiner-elements"
+              "the-unarchiver"
+              #"figma" # Newer version installed that the one provided by nix
+              "mountain-duck"
+              "twingate"
+              #"audacity"
+              "firefox"
+              #"libreoffice"
+              "nextcloud"
+              "usbimager"
+              "inkscape"
+              #"balenaetcher"
+              "lm-studio"
+              "notion"
+              "visual-studio-code"
+              "beeper"
+              "font-jetbrains-mono"
+              "font-computer-modern"
+              "font-new-computer-modern"
+              "font-sf-pro"
+              "logoer"
+              "numi"
+              "obsidian"
+              "warp"
+              "bitwarden"
+              "maccy"
+              "windows-app"
+              #"blender"
+              "free-ruler"
+              "mathpix-snipping-tool"
+              #"phoenix"
+              "zen"
+              "busycal"
+              "hammerspoon"
+              "microsoft-auto-update"
+              "postman"
+              "chromium"
+              #"handbrake"
+              "microsoft-excel"
+              "qflipper"
+              "zoom"
+              "coolterm"
+              "handbrake-app"
+              "microsoft-powerpoint"
+              "rectangle"
+              "cyberduck"
+              "iina"
+              "microsoft-word"
+              #"spotify"
+              "discord"
+              #"inkscape"
+              "minecraft"
+              "sublime-text"
+              "localsend"
+              #"docker"
+              "jetbrains-toolbox"
+              #"mongodb-compass"
+              "termius"
+              #"bepo"
+              # Fonts
+              "font-hack-nerd-font"
+              "sf-symbols"
+              "losslesscut"
+              #"zed"
+            ];
+            masApps = {
+              #reMarkableDesktop = 1276493162;
+              PixelmatorPro = 1289583905;
+              ColorSlurp = 1287239339;
+              Dropover = 1355679052;
+              #ParallelsDesktop = 1085114709;
+              Vivid = 6443470555;
+              HandMirror = 1502839586;
+              LittleSnitchMini = 1629008763;
+              Amphetamine = 937984704;
+              #BarbeeHideMenuBarItems = 1548711022;
+              #ScreenBandit = 1043565969;
+              #SpoticaMenu = 570549457;
+            };
+            onActivation.cleanup = "zap";
+            onActivation.autoUpdate = true;
+            onActivation.upgrade = true;
+          };
 
-            autoMigrate = true;
-
-            # Optional: Declarative tap management
-            taps = {
-              "homebrew/core" = homebrew-core;
-              "homebrew/cask" = homebrew-cask;
-              "FelixKratz/homebrew-formulae" = felixkratz;
+          system.defaults = {
+            NSGlobalDomain = {
+              AppleFontSmoothing = 2;
+              NSAutomaticSpellingCorrectionEnabled = false;
+              NSAutomaticCapitalizationEnabled = false;
+              NSAutomaticPeriodSubstitutionEnabled = false;
+              AppleEnableSwipeNavigateWithScrolls = false;
+              AppleMeasurementUnits = "Centimeters";
+              AppleICUForce24HourTime = true;
+              "com.apple.mouse.tapBehavior" = 1;
             };
 
-            # Optional: Enable fully-declarative tap management
-            #
-            # With mutableTaps disabled, taps can no longer be added imperatively with `brew tap`.
-            mutableTaps = false;
+            dock = {
+              autohide = true;
+              autohide-delay = 0.05;
+              autohide-time-modifier = 0.5;
+              mru-spaces = false;
+              persistent-others = [ "/Users/clement/Downloads" ];
+              scroll-to-open = true;
+              minimize-to-application = true;
+              show-recents = false;
+              static-only = false;
+              tilesize = 48;
+              largesize = 68;
+              wvous-br-corner = 10;
+              wvous-bl-corner = 1;
+              wvous-tr-corner = 1;
+              wvous-tl-corner = 1;
+              persistent-apps = [
+                "/System/Applications/Preview.app"
+                "/System/Applications/Mail.app"
+                "/Applications/Beeper Desktop.app"
+                "/Applications/Discord.app"
+                "${pkgs.spotify}/Applications/Spotify.app"
+                "/Applications/Anytype.app"
+                "/Applications/BusyCal.app"
+                "/Applications/Microsoft Word.app"
+                "/Applications/Microsoft Excel.app"
+                "/Applications/Microsoft PowerPoint.app"
+                "/Applications/LibreOffice.app"
+                "/Applications/Termius.app"
+                "/System/Applications/Utilities/Terminal.app"
+                "/Applications/Sublime Text.app"
+                "/Applications/Zen.app"
+                "/Users/clement/Applications/IntelliJ IDEA.app"
+                "/Users/clement/Applications/PyCharm.app"
+                "/Users/clement/Applications/CLion.app"
+              ];
+            };
+            finder = {
+              AppleShowAllExtensions = true;
+              FXEnableExtensionChangeWarning = false;
+              NewWindowTarget = "Other";
+              NewWindowTargetPath = "file:///Users/clement/Downloads";
+              #AppleShowAllFiles = true;
+              ShowPathbar = true;
+              CreateDesktop = false;
+            };
+            loginwindow = {
+              GuestEnabled = false;
+              DisableConsoleAccess = true;
+            };
+            trackpad = {
+              FirstClickThreshold = 0;
+              SecondClickThreshold = 0;
+              TrackpadThreeFingerDrag = true;
+            };
+            WindowManager = {
+              EnableTilingByEdgeDrag = false;
+            };
+            LaunchServices.LSQuarantine = false;
+            spaces.spans-displays = false;
           };
-        }
-        home-manager.darwinModules.home-manager {
-          users.users.clement.home = /Users/clement;
-          home-manager.backupFileExtension = "backup";
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.users.clement = import ./home.nix;
-        }
-      ];
+        };
+    in
+    {
+      # Build darwin flake using:
+      # $ darwin-rebuild build --flake .
+      darwinConfigurations."MBP-Clement" = nix-darwin.lib.darwinSystem {
+        modules = [
+          configuration
+          mac-app-util.darwinModules.default
+          nix-homebrew.darwinModules.nix-homebrew
+          {
+            #          services = {
+            #            sketchybar = {
+            #              enable = true;
+            #              #package = pkgs.sketchybar;
+            #            };
+            #            skhd.enable = true;
+            #          };
+            nix-homebrew = {
+              enable = true;
+              enableRosetta = true;
+              user = "clement";
+
+              autoMigrate = true;
+
+              # Optional: Declarative tap management
+              taps = {
+                "homebrew/core" = homebrew-core;
+                "homebrew/cask" = homebrew-cask;
+                "FelixKratz/homebrew-formulae" = felixkratz;
+              };
+
+              # Optional: Enable fully-declarative tap management
+              #
+              # With mutableTaps disabled, taps can no longer be added imperatively with `brew tap`.
+              mutableTaps = false;
+            };
+          }
+          home-manager.darwinModules.home-manager
+          {
+            users.users.clement.home = /Users/clement;
+            home-manager.backupFileExtension = "backup";
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.clement = import ./home.nix;
+          }
+        ];
+      };
     };
-  };
 }

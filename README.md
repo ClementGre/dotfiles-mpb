@@ -21,7 +21,7 @@ sudo launchctl load /Library/LaunchDaemons/org.nixos.nix-daemon.plist
 
 ### Clean Nix Store
 ```bash
-nix-store --gc
+sudo nix-store --gc
 ```
 
 ### Sketchybar
