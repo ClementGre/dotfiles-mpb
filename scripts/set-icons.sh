@@ -11,11 +11,11 @@ if [ -x "$FILEICON" ]; then
   [ -d "$HOME/Git" ] && \
     sudo $FILEICON set "$HOME/GitHub" "$DOTFILES/files/icns/folders/git.icns"
 
-  [ -d "/Users/clement/Applications/Zen.app" ] && \
-    sudo $FILEICON set "/Users/clement/Applications/Zen.app" "$DOTFILES/files/icns/apps/zen.icns"
+  [ -d "/Applications/Zen.app" ] && \
+    sudo $FILEICON set "/Applications/Zen.app" "$DOTFILES/files/icns/apps/zen.icns"
 
-  [ -d "/Users/clement/Applications/Claude.app" ] && \
-    sudo $FILEICON set "/Users/clement/Applications/Claude.app" "$DOTFILES/files/icns/apps/claudec.icns"
+  [ -d "/Applications/Claude.app" ] && \
+    sudo $FILEICON set "/Applications/Claude.app" "$DOTFILES/files/icns/apps/claudec.icns"
 
   [ -d "/Applications/Termius.app" ] && \
     sudo $FILEICON set "/Applications/Termius.app" "$DOTFILES/files/icns/apps/termius.icns"
