@@ -65,6 +65,8 @@
             maven
             just
             libpq
+            imagemagick
+            gexiv2
 
             openconnect # Cisco AnyConnect client
             vpn-slice # easy and secure split-tunnel VPN setup
@@ -89,7 +91,7 @@
             # GUI apps
             audacity
             #blender
-            spotify
+            #spotify
           ];
 
           fonts = {
@@ -136,6 +138,7 @@
               #"openconnect"
               "antlr"
               "antlr4-cpp-runtime"
+              "fileicon"
             ];
             casks = [
               "aldente"
@@ -188,7 +191,7 @@
               "cyberduck"
               "iina"
               "microsoft-word"
-              #"spotify"
+              "spotify"
               "discord"
               #"inkscape"
               "minecraft"
@@ -209,7 +212,7 @@
               #reMarkableDesktop = 1276493162;
               PixelmatorPro = 1289583905;
               ColorSlurp = 1287239339;
-              Dropover = 1355679052;
+              #Dropover = 1355679052;
               #ParallelsDesktop = 1085114709;
               Vivid = 6443470555;
               HandMirror = 1502839586;
@@ -257,7 +260,9 @@
                 "/System/Applications/Mail.app"
                 "/Applications/Beeper Desktop.app"
                 "/Applications/Discord.app"
-                "${pkgs.spotify}/Applications/Spotify.app"
+                #"${pkgs.spotify}/Applications/Spotify.app"
+                "/Applications/Spotify.app"
+
                 "/Applications/Anytype.app"
                 "/Applications/BusyCal.app"
                 "/Applications/Microsoft Word.app"
@@ -267,10 +272,14 @@
                 "/Applications/Termius.app"
                 "/System/Applications/Utilities/Terminal.app"
                 "/Applications/Sublime Text.app"
+
                 "/Applications/Zen.app"
+
                 "/Users/clement/Applications/IntelliJ IDEA.app"
-                "/Users/clement/Applications/PyCharm.app"
-                "/Users/clement/Applications/CLion.app"
+                "/Applications/Zed.app"
+                "/Applications/Claude.app"
+                #"/Users/clement/Applications/PyCharm.app"
+                #"/Users/clement/Applications/CLion.app"
               ];
             };
             finder = {
