@@ -268,7 +268,7 @@
                 "/Applications/BusyCal.app"
                 "/Applications/Microsoft Word.app"
                 "/Applications/Microsoft Excel.app"
-                "/Applications/Microsoft PowerPoint.app"
+                #"/Applications/Microsoft PowerPoint.app"
                 "/Applications/LibreOffice.app"
                 "/Applications/Termius.app"
                 "/System/Applications/Utilities/Terminal.app"
