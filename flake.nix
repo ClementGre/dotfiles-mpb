@@ -89,7 +89,7 @@
             swi-prolog
 
             # GUI apps
-            audacity
+            #audacity
             #blender
             #spotify
           ];
@@ -145,12 +145,10 @@
               "docker-desktop"
               "karabiner-elements"
               "the-unarchiver"
-              #"figma" # Newer version installed that the one provided by nix
               "mountain-duck"
               "twingate"
-              #"audacity"
+              "audacity"
               "firefox"
-              #"libreoffice"
               "nextcloud"
               "usbimager"
               "inkscape"
@@ -206,7 +204,10 @@
               "font-hack-nerd-font"
               "sf-symbols"
               "losslesscut"
+              # Apps that are updated automatically that need brew only for the first installation
               #"zed"
+              #"figma"
+              #"libreoffice"
             ];
             masApps = {
               #reMarkableDesktop = 1276493162;
