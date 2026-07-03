@@ -204,6 +204,8 @@
               "font-hack-nerd-font"
               "sf-symbols"
               "losslesscut"
+              "yubico-authenticator"
+              "finetune"
               # Apps that are updated automatically that need brew only for the first installation
               #"zed"
               #"figma"

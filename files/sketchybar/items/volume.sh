@@ -13,6 +13,6 @@ sketchybar --add item volume right \
                         label.font="SF Pro:Bold:12" \
                         label.padding_right=2 \
                         label.padding_left=8 \
-                        click_script="open -a 'Audio MIDI Setup'" \
+                        click_script="osascript -e 'tell application \"System Events\" to keystroke \"t\" using {control down, shift down}'" \
            --subscribe volume volume_change
-
+#                        click_script="open -a 'Audio MIDI Setup'" \

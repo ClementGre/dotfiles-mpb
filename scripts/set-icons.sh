@@ -15,7 +15,7 @@ if [ -x "$FILEICON" ]; then
     sudo $FILEICON set "/Applications/Zen.app" "$DOTFILES/files/icns/apps/zen.icns"
 
   [ -d "/Applications/Claude.app" ] && \
-    sudo $FILEICON set "/Applications/Claude.app" "$DOTFILES/files/icns/apps/claudec.icns"
+    sudo $FILEICON set "/Applications/Claude.app" "$DOTFILES/files/icns/apps/claude.icns"
 
   [ -d "/Applications/Termius.app" ] && \
     sudo $FILEICON set "/Applications/Termius.app" "$DOTFILES/files/icns/apps/termius.icns"
