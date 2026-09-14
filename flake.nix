@@ -139,6 +139,7 @@
               "antlr"
               "antlr4-cpp-runtime"
               "fileicon"
+              "copilot-cli"
             ];
             casks = [
               "aldente"
@@ -166,7 +167,7 @@
               "obsidian"
               "warp"
               "bitwarden"
-              "maccy"
+              #"maccy"
               "windows-app"
               #"blender"
               "free-ruler"
@@ -206,6 +207,7 @@
               "losslesscut"
               "yubico-authenticator"
               "finetune"
+              "raycast"
               # Apps that are updated automatically that need brew only for the first installation
               #"zed"
               #"figma"
