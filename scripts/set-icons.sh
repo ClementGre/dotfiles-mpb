@@ -22,8 +22,8 @@ if [ -x "$FILEICON" ]; then
 
   #[ -d "/Applications/Microsoft Excel.app" ] && \
   #  sudo $FILEICON set "/Applications/Microsoft Excel.app" "$DOTFILES/files/icns/apps/excel.icns"
-  [ -d "/Applications/Microsoft Word.app" ] && \
-    sudo $FILEICON set "/Applications/Microsoft Word.app" "$DOTFILES/files/icns/apps/word.icns"
+  # [ -d "/Applications/Microsoft Word.app" ] && \
+  #   sudo $FILEICON set "/Applications/Microsoft Word.app" "$DOTFILES/files/icns/apps/word.icns"
   [ -d "/Applications/LibreOffice.app" ] && \
     sudo $FILEICON set "/Applications/LibreOffice.app" "$DOTFILES/files/icns/apps/libreoffice.icns"
   [ -d "/Applications/Sublime Text.app" ] && \

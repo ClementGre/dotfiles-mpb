@@ -47,31 +47,31 @@
           environment.systemPackages = with pkgs; [
             # Base tools
             neovim
+            fastfetch
             wget
-            ffmpeg_6-full
             nix-index
+            ffmpeg_6-full
+            imagemagick
             cowsay
             lolcat
-            python314
             fortune
+            python314
             nmap
             arp-scan
             typst
             poetry # Python dependency management
             comma # Run nix packages without installing them with `, <package>`
-            fastfetch
             fish # Shell
             duti # Manage file associations
             maven
             just
-            libpq
-            imagemagick
-            gexiv2
+            libpq # Postgres client
 
             openconnect # Cisco AnyConnect client
             vpn-slice # easy and secure split-tunnel VPN setup
             tokei # Line of code statistics tool
             libpq # PostgreSQL client library
+            libpq.pg_config
             arduino-cli # Command line interface for Arduino
             mysql84
 
@@ -82,7 +82,6 @@
             tree
             nil # Nix language server
 
-            libpq.pg_config
 
             nodejs_24
             opam
@@ -128,18 +127,16 @@
           homebrew = {
             enable = true;
             brews = [
-              "mas"
-              "shpotify"
+              "mas" # Mac App Store shell control
+              "shpotify" # Spotify shell controll
               "tailscale"
               "texlive"
               "ifstat"
               "ical-buddy"
               "sketchybar"
               #"openconnect"
-              "antlr"
-              "antlr4-cpp-runtime"
-              "fileicon"
-              "copilot-cli"
+              "fileicon" # Change file and apps icons
+              "mole" # Mac app uninstall and clean
             ];
             casks = [
               "aldente"
