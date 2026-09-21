@@ -434,11 +434,13 @@ void open_with_hidden_menu_bar(AXUIElementRef item, const char* command) {
   }
 }
 
-void ax_select_menu_extra(char* target) {
+// Returns false when there is no such icon, so callers can fall back (`menus -s X || ...`)
+bool ax_select_menu_extra(char* target) {
   AXUIElementRef item = ax_get_extra_menu_item(target);
-  if (!item) return;
+  if (!item) return false;
   open_with_hidden_menu_bar(item, NULL);
   CFRelease(item);
+  return true;
 }
 
 extern void _SLPSGetFrontProcess(ProcessSerialNumber* psn);
@@ -482,7 +484,7 @@ int main (int argc, char **argv) {
       if (!app) return 1;
       ax_select_menu_option(app, id);
       CFRelease(app);
-    } else ax_select_menu_extra(argv[2]);
+    } else if (!ax_select_menu_extra(argv[2])) return 1;
   }
   return 0;
 }

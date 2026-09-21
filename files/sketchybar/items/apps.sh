@@ -4,11 +4,9 @@
 sketchybar \
   --add item apps right \
   --set apps icon="􁇵" \
-    icon.font="SF Pro:Medium:14" \
     label.drawing=off \
     click_script="$PLUGIN_DIR/popup_toggle.sh apps $PLUGIN_DIR/apps.sh" \
     script="sketchybar --set apps popup.drawing=off" \
-    popup.background.color=0xFF000000 \
     popup.background.drawing=on \
     popup.background.corner_radius=5 \
     popup.height=24 \
