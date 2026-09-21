@@ -2,38 +2,18 @@
 
 My nix-darwin dotfiles for my personal MacBook Pro.
 
-## Useful commands
+## Commands
 
-### Rebuild
+Common tasks are [just](https://github.com/casey/just) recipes. List them with:
 ```bash
-sudo darwin-rebuild switch --impure --flake ~/GitHub/dotfiles-MBP/
-```
-
-### Update
-```bash
-nix flake update
+just
 ```
 
-### Reload Nix daemon
-```bash
-sudo launchctl load /Library/LaunchDaemons/org.nixos.nix-daemon.plist
-```
+- `just switch` rebuilds without upgrading brew packages; `just upgrade` also runs brew update/upgrade and re-applies custom icons.
+- Custom icons (`just icons`) and file associations (`just assoc`) no longer run on every rebuild.
 
-### Clean Nix Store
-```bash
-sudo nix-store --gc
-```
+## Dotfiles are live symlinks
 
-### Sketchybar
-#### Restart:
-```bash
-sketchybar --reload
-```
-#### Restart with launchctl:
-```bash
-launchctl stop org.nixos.sketchybar
-```
-#### Debug locally:
-```bash
-cd ~/.config/ && sudo rm ./sketchybar && sudo ln -s ~/GitHub/dotfiles-MBP/files/sketchybar sketchybar
-```
+`home.nix` links the shell, skhd, fastfetch and sketchybar configs straight to `files/` in this repo (`mkOutOfStoreSymlink`), so edits apply without a rebuild. Nix rollbacks don't restore them: git is their history. The repo must stay at `~/GitHub/dotfiles-MBP`.
+
+After editing `files/sketchybar/helpers/*.c`, run `just bar` to rebuild the helpers and reload sketchybar.

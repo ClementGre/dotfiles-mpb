@@ -99,6 +99,7 @@ source $ITEMS_DIR/battery.sh
 source $ITEMS_DIR/volume.sh
 source $ITEMS_DIR/display.sh
 source $ITEMS_DIR/vpn.sh
+source $ITEMS_DIR/apps.sh
 source $ITEMS_DIR/calendar.sh
 
 source $ITEMS_DIR/spotify-inline.sh

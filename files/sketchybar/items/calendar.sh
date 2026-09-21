@@ -8,8 +8,6 @@ calendar_title=(
   label.font="SF Pro:Bold:10"
   y_offset=9
   click_script="open -a 'BusyCal'"
-  script="$PLUGIN_DIR/calendar.sh"
-  update_freq=30
 )
 
 calendar_time=(
@@ -27,4 +25,8 @@ sketchybar \
   --set calendar_title "${calendar_title[@]}" \
   --add item calendar_time right \
   --set calendar_time "${calendar_time[@]}"
+
+# Labels are set by a resident helper (helpers/calendar.swift), restarted on reload
+pkill -f "$BIN_DIR/calendar"
+$BIN_DIR/calendar &
 

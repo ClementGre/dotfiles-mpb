@@ -4,7 +4,7 @@ sketchybar \
   --set vpn icon="􀉣" \
     icon.font="SF Pro:Medium:14" \
     label.drawing=off \
-    click_script="sketchybar --set vpn popup.drawing=toggle" \
+    click_script="$PLUGIN_DIR/popup_toggle.sh vpn" \
     script="sketchybar --set vpn popup.drawing=off" \
     popup.background.color=0xFF000000 \
     popup.background.drawing=on \

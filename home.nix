@@ -3,6 +3,10 @@
 
 { config, pkgs, ... }:
 
+let
+  # Symlink straight to the repo (not a store copy), so edits apply without a rebuild
+  link = path: config.lib.file.mkOutOfStoreSymlink "/Users/clement/GitHub/dotfiles-MBP/files/${path}";
+in
 {
 
   home.username = "clement";
@@ -16,15 +20,13 @@
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.
   home.file = {
-    ".zshenv".source = ./files/zsh/.zshenv;
-    ".zprofile".source = /Users/clement/GitHub/dotfiles-MBP/files/zsh/.zprofile;
-    ".zshrc".source = /Users/clement/GitHub/dotfiles-MBP/files/zsh/.zshrc;
-    ".zlogin".source = /Users/clement/GitHub/dotfiles-MBP/files/zsh/.zlogin;
-    ".config/fastfetch/config.jsonc".source =
-      /Users/clement/GitHub/dotfiles-MBP/files/fastfetch/config.jsonc;
-    ".skhdrc".source = /Users/clement/GitHub/dotfiles-MBP/files/skhd/.skhdrc;
-    ".config/sketchybar".source = /Users/clement/GitHub/dotfiles-MBP/files/sketchybar;
-    ".config/sketchybar".executable = true;
+    ".zshenv".source = link "zsh/.zshenv";
+    ".zprofile".source = link "zsh/.zprofile";
+    ".zshrc".source = link "zsh/.zshrc";
+    ".zlogin".source = link "zsh/.zlogin";
+    ".config/fastfetch/config.jsonc".source = link "fastfetch/config.jsonc";
+    ".skhdrc".source = link "skhd/.skhdrc";
+    ".config/sketchybar".source = link "sketchybar";
   };
 
   home.sessionVariables = {
@@ -37,27 +39,16 @@
 
   programs.home-manager.enable = true;
 
-  home.activation.fileAssociations = {
-    after = [ "writeBoundary" ];
-    before = [ ];
-    data = ''
-      ${./scripts/file-associations.sh}
-    '';
-  };
+  # Réglages > Barre des menus > Afficher l'arrière-plan de la barre des menus, so the native
+  # bar doesn't blend into sketchybar when revealed
+  targets.darwin.defaults.NSGlobalDomain.SLSMenuBarUseBlurredAppearance = true;
 
+  # Custom icons and file associations are `just icons` / `just assoc`, not run on every switch
   home.activation.startupCommands = {
-    after = [ "fileAssociations" ];
+    after = [ "writeBoundary" ];
     before = [ ];
     data = ''
       ${./scripts/startup-commands.sh}
-    '';
-  };
-
-  home.activation.customIcons = {
-    after = [ "writeBoundary" ];
-    before = [ ];
-    data = ''
-      ${./scripts/set-icons.sh}
     '';
   };
 }

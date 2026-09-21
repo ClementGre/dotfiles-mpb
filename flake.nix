@@ -10,7 +10,11 @@
     };
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
-    mac-app-util.url = "github:hraban/mac-app-util";
+    mac-app-util = {
+      url = "github:hraban/mac-app-util";
+      # Its own pinned nixpkgs ships SBCL < 2.6.6, which can't start on macOS 27
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     homebrew-core = {
       url = "github:homebrew/homebrew-core";
@@ -39,6 +43,9 @@
       felixkratz,
     }:
     let
+      # Opt-in steps, set by the justfile (read at eval time, hence --impure)
+      flag = name: builtins.getEnv name == "1";
+
       configuration =
         { pkgs, config, ... }:
         {
@@ -66,6 +73,7 @@
             maven
             just
             libpq # Postgres client
+            git-lfs # Git with remote storage for large files
 
             openconnect # Cisco AnyConnect client
             vpn-slice # easy and secure split-tunnel VPN setup
@@ -133,12 +141,13 @@
               "texlive"
               "ifstat"
               "ical-buddy"
-              "sketchybar"
+              "felixkratz/formulae/sketchybar" # Fully qualified so brew bundle keeps it trusted
               #"openconnect"
               "fileicon" # Change file and apps icons
               "mole" # Mac app uninstall and clean
             ];
             casks = [
+              "slack"
               "aldente"
               "docker-desktop"
               "karabiner-elements"
@@ -225,8 +234,9 @@
               #SpoticaMenu = 570549457;
             };
             onActivation.cleanup = "zap";
-            onActivation.autoUpdate = true;
-            onActivation.upgrade = true;
+            # Only on `just upgrade`, so a plain `just switch` stays fast
+            onActivation.autoUpdate = flag "DOTFILES_BREW_UPGRADE";
+            onActivation.upgrade = flag "DOTFILES_BREW_UPGRADE";
           };
 
           system.defaults = {
