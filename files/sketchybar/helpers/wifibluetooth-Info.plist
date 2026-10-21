@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Embedded in bin/wifibluetooth so macOS can ask for Bluetooth access -->
+<plist version="1.0">
+<dict>
+  <key>CFBundleIdentifier</key>
+  <string>io.clgr.sketchybar.wifibluetooth</string>
+  <key>CFBundleName</key>
+  <string>sketchybar wifibluetooth</string>
+  <key>NSBluetoothAlwaysUsageDescription</key>
+  <string>Shows whether Bluetooth is on and how many devices are connected in sketchybar.</string>
+</dict>
+</plist>

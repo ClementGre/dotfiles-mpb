@@ -125,9 +125,6 @@
           system.primaryUser = "clement";
 
           security.pam.services.sudo_local.text = "auth sufficient pam_tid.so.2";
-          security.sudo.extraConfig = ''
-            clement ALL=(ALL) NOPASSWD: /usr/bin/wdutil info
-          '';
 
           # The platform the configuration will be used on.
           nixpkgs.hostPlatform = "aarch64-darwin";

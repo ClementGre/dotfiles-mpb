@@ -18,5 +18,6 @@ sketchybar -m \
                                   script="$PLUGIN_DIR/weather.sh" \
                                   click_script="open -n '/System/Applications/Weather.app/'"
 
-# Subscribe to relevant events
-sketchybar --subscribe weather_label system_woke
+# Subscribe to relevant events (screen_unlocked: the plugin skips updates while locked)
+sketchybar --add event screen_unlocked com.apple.screenIsUnlocked \
+           --subscribe weather_label system_woke screen_unlocked

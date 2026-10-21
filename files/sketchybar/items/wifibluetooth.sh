@@ -1,11 +1,11 @@
 #!/bin/bash
 
+# Icons and colors (Wi-Fi by signal strength) are set by a resident helper
+# (helpers/wifibluetooth.swift), restarted on reload
 sketchybar --add item wifi right \
            --set wifi icon=􀙇 \
                       icon.color=0xffE96F42 \
                       label.drawing=off \
-                      script="$PLUGIN_DIR/wifibluetooth.sh" \
-                      update_freq=2 \
                       click_script="$BIN_DIR/menus -s com.apple.menuextra.wifi" \
            --add item bluetooth right \
            --set bluetooth icon=󰂱 \
@@ -13,3 +13,6 @@ sketchybar --add item wifi right \
                            icon.color=0xff0081FB \
                            label.drawing=off \
                            click_script="$BIN_DIR/menus -s com.apple.menuextra.bluetooth"
+
+pkill -f "$BIN_DIR/wifibluetooth"
+$BIN_DIR/wifibluetooth wifi bluetooth &

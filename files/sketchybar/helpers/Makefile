@@ -1,4 +1,4 @@
-all: bin/menus bin/clock bin/wait_click bin/calendar bin/focus
+all: bin/menus bin/clock bin/wait_click bin/calendar bin/focus bin/wifibluetooth
 
 bin/menus: menus.c | bin
 	clang -std=c99 -O3 -F/System/Library/PrivateFrameworks/ -framework Carbon -framework SkyLight $< -o $@
@@ -14,6 +14,12 @@ bin/calendar: calendar.swift calendar-Info.plist sketchybar.h | bin
 
 bin/focus: focus.swift sketchybar.h | bin
 	swiftc -O -swift-version 5 -import-objc-header sketchybar.h focus.swift -o $@
+
+# The Info.plist is embedded so macOS can ask for Bluetooth access
+bin/wifibluetooth: wifibluetooth.swift wifibluetooth-Info.plist sketchybar.h | bin
+	swiftc -O -swift-version 5 -import-objc-header sketchybar.h \
+		-Xlinker -sectcreate -Xlinker __TEXT -Xlinker __info_plist -Xlinker wifibluetooth-Info.plist \
+		wifibluetooth.swift -o $@
 
 bin/clock: clock.c | bin
 	clang -std=c99 clock.c -framework CoreFoundation -o bin/clock
