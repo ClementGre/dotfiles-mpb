@@ -220,7 +220,8 @@
               #reMarkableDesktop = 1276493162;
               PixelmatorPro = 1289583905;
               ColorSlurp = 1287239339;
-              #Dropover = 1355679052;
+              Dropover = 1355679052;
+              Xcode = 497799835;
               #ParallelsDesktop = 1085114709;
               Vivid = 6443470555;
               HandMirror = 1502839586;
