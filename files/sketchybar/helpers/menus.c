@@ -161,11 +161,32 @@ bool ax_identifier_equals(AXUIElementRef element, const char* identifier) {
   return equal;
 }
 
+void ax_copy_string(AXUIElementRef element, CFStringRef attribute, char* buffer, size_t size) {
+  snprintf(buffer, size, "-");
+  CFTypeRef value = NULL;
+  AXUIElementCopyAttributeValue(element, attribute, &value);
+  if (!value) return;
+  if (CFGetTypeID(value) == CFStringGetTypeID() && CFStringGetLength(value) > 0)
+    CFStringGetCString(value, buffer, size, kCFStringEncodingUTF8);
+  CFRelease(value);
+}
+
+// An app icon's label: its description, else its tooltip (Vorssaint's metrics only have that)
+void ax_copy_label(AXUIElementRef element, char* buffer, size_t size) {
+  ax_copy_string(element, kAXDescriptionAttribute, buffer, size);
+  if (strcmp(buffer, "-") == 0) ax_copy_string(element, kAXHelpAttribute, buffer, size);
+}
+
 // target is either an Apple item identifier (com.apple.menuextra.wifi), which since macOS 27
-// lives in MenuBarAgent wrapped in an AXGroup, or an app process name (first item is used).
+// lives in MenuBarAgent wrapped in an AXGroup, an app process name (first item is used),
+// or "App:Label" for the app's icon whose label starts with Label (Vorssaint:CPU).
 AXUIElementRef ax_get_extra_menu_item(char* target) {
   bool apple = strncmp(target, "com.apple.menuextra.", 20) == 0;
-  pid_t pid = pid_for_process_name(apple ? "MenuBarAgent" : target);
+  char process[256];
+  snprintf(process, sizeof(process), "%s", target);
+  char* label = apple ? NULL : strchr(process, ':');
+  if (label) *label++ = '\0';
+  pid_t pid = pid_for_process_name(apple ? "MenuBarAgent" : process);
   if (!pid) return NULL;
 
   AXUIElementRef app = AXUIElementCreateApplication(pid);
@@ -179,6 +200,11 @@ AXUIElementRef ax_get_extra_menu_item(char* target) {
     for (uint32_t i = 0; i < count && !result; i++) {
       AXUIElementRef child = CFArrayGetValueAtIndex(children_ref, i);
       if (!apple) {
+        if (label) {
+          char buffer[256];
+          ax_copy_label(child, buffer, sizeof(buffer));
+          if (strncmp(buffer, label, strlen(label)) != 0) continue;
+        }
         result = (AXUIElementRef)CFRetain(child);
         break;
       }
@@ -200,16 +226,6 @@ AXUIElementRef ax_get_extra_menu_item(char* target) {
   if (extras) CFRelease(extras);
   CFRelease(app);
   return result;
-}
-
-void ax_copy_string(AXUIElementRef element, CFStringRef attribute, char* buffer, size_t size) {
-  snprintf(buffer, size, "-");
-  CFTypeRef value = NULL;
-  AXUIElementCopyAttributeValue(element, attribute, &value);
-  if (!value) return;
-  if (CFGetTypeID(value) == CFStringGetTypeID() && CFStringGetLength(value) > 0)
-    CFStringGetCString(value, buffer, size, kCFStringEncodingUTF8);
-  CFRelease(value);
 }
 
 // "/Applications/Foo.app/Contents/MacOS/foo" -> app name "Foo" and its bundle identifier
@@ -236,8 +252,8 @@ void app_bundle_info(const char* path, char* name, size_t name_size, char* bundl
 }
 
 // Lists every menu bar icon, tab separated:
-//   <target for -s>  <app name>  <bundle id>  <description>  <actions>
-// Apple icons have "Apple" as app name; an app's extra icons are noted in their description.
+//   <target for -s>  <app name>  <bundle id>  <label>  <actions>
+// Apple icons have "Apple" as app name; an app's extra icons are targeted as App:Label.
 void ax_print_menu_extras() {
   pid_t agent = pid_for_process_name("MenuBarAgent");
   pid_t pids[4096];
@@ -262,12 +278,14 @@ void ax_print_menu_extras() {
         AXUIElementRef child = CFArrayGetValueAtIndex(children_ref, j);
         char buffer[256];
         if (pids[i] != agent) {
-          ax_copy_string(child, kAXDescriptionAttribute, buffer, sizeof(buffer));
-          if (j > 0) {
-            char extra[64];
-            snprintf(extra, sizeof(extra), " (item %ld, -s only opens the first)", (long)j + 1);
-            strlcat(buffer, extra, sizeof(buffer));
-          }
+          ax_copy_label(child, buffer, sizeof(buffer));
+          // Extra icons are addressed by label, the first one also by the bare name
+          char target[512];
+          snprintf(target, sizeof(target), "%s", name);
+          if (j > 0 && strcmp(buffer, "-") != 0)
+            snprintf(target, sizeof(target), "%s:%s", name, buffer);
+          else if (j > 0)
+            strlcat(buffer, " (unlabelled extra icon, -s can't open it)", sizeof(buffer));
           char actions[256] = "";
           CFArrayRef action_names = NULL;
           if (AXUIElementCopyActionNames(child, &action_names) == kAXErrorSuccess && action_names) {
@@ -279,7 +297,7 @@ void ax_print_menu_extras() {
             }
             CFRelease(action_names);
           }
-          printf("%s\t%s\t%s\t%s\t%s\n", name, app_name, bundle_id, buffer, actions[0] ? actions : "none");
+          printf("%s\t%s\t%s\t%s\t%s\n", target, app_name, bundle_id, buffer, actions[0] ? actions : "none");
           continue;
         }
         // Apple items: each wrapped in a group, addressed by identifier
@@ -301,8 +319,10 @@ void ax_print_menu_extras() {
 
 #define MAX_POPUPS 64
 
-// Fills ids with the on-screen popup menu windows, returns their count
-int popup_menu_windows(uint32_t* ids) {
+// Fills ids with the on-screen popup menu windows, returns their count. With panels, also
+// status-level windows below the menu bar (Vorssaint opens its panels there, not as menus):
+// only diff those against a before snapshot, as some apps keep such windows open for good.
+int popup_menu_windows(uint32_t* ids, bool panels) {
   CFArrayRef window_list = CGWindowListCopyWindowInfo(kCGWindowListOptionOnScreenOnly,
                                                       kCGNullWindowID                );
   if (!window_list) return 0;
@@ -317,8 +337,10 @@ int popup_menu_windows(uint32_t* ids) {
     CFNumberGetValue(layer_ref, kCFNumberIntType, &layer);
     CGRect bounds = CGRectNull;
     CGRectMakeWithDictionaryRepresentation(bounds_ref, &bounds);
+    // Status items themselves sit in the bar at y 0
+    bool panel = panels && layer == kCGStatusWindowLevel && bounds.origin.y > 0;
     // Some apps park their popover off-screen instead of closing it
-    if (layer != kCGPopUpMenuWindowLevel || bounds.origin.x < 0) continue;
+    if ((layer != kCGPopUpMenuWindowLevel && !panel) || bounds.origin.x < 0) continue;
     CFNumberGetValue(id_ref, kCFNumberSInt32Type, &ids[count++]);
   }
   CFRelease(window_list);
@@ -375,7 +397,7 @@ int wait_for_new_popups(uint32_t* before, int before_count, uint32_t* opened, in
   uint32_t current[MAX_POPUPS];
   for (int i = 0; i < tries; i++) {
     usleep(50000);
-    int count = new_popups(before, before_count, current, popup_menu_windows(current), opened);
+    int count = new_popups(before, before_count, current, popup_menu_windows(current, true), opened);
     if (count > 0) return count;
   }
   return 0;
@@ -386,7 +408,7 @@ int wait_for_new_popups(uint32_t* before, int before_count, uint32_t* opened, in
 void open_with_hidden_menu_bar(AXUIElementRef item, const char* command) {
   claim_menu_bar();
   uint32_t before[MAX_POPUPS], current[MAX_POPUPS], opened[MAX_POPUPS];
-  int before_count = popup_menu_windows(before);
+  int before_count = popup_menu_windows(before, true);
 
   int cid = SLSMainConnectionID();
   SLSSetMenuBarInsetAndAlpha(cid, 0, 1, 0.0);
@@ -411,7 +433,7 @@ void open_with_hidden_menu_bar(AXUIElementRef item, const char* command) {
   // Only set the alpha once: every call re-applies the inset too, which redraws the bar.
   while (opened_count > 0) {
     usleep(100000);
-    int current_count = popup_menu_windows(current);
+    int current_count = popup_menu_windows(current, true);
     bool still_open = false;
     for (int i = 0; i < opened_count && !still_open; i++)
       still_open = contains_id(current, current_count, opened[i]);
@@ -420,14 +442,14 @@ void open_with_hidden_menu_bar(AXUIElementRef item, const char* command) {
 
   while (!newer_helper_running()) {
     // Another menu may still be open (e.g. switched to a neighbouring item): wait for it too
-    if (popup_menu_windows(current) > 0) {
+    if (popup_menu_windows(current, false) > 0) {
       usleep(100000);
       continue;
     }
     // Let the bar collapse while still transparent, then make it opaque again
     SLSSetMenuBarVisibilityOverrideOnDisplay(cid, 0, false);
     usleep(1000000);
-    if (newer_helper_running() || popup_menu_windows(current) > 0) continue;
+    if (newer_helper_running() || popup_menu_windows(current, false) > 0) continue;
     SLSSetMenuBarInsetAndAlpha(cid, 0, 1, 1.0);
     unlink(owner_file());
     break;
@@ -441,6 +463,49 @@ bool ax_select_menu_extra(char* target) {
   open_with_hidden_menu_bar(item, NULL);
   CFRelease(item);
   return true;
+}
+
+AXUIElementRef ax_find_identifier(AXUIElementRef element, const char* identifier, int depth) {
+  if (ax_identifier_equals(element, identifier)) return (AXUIElementRef)CFRetain(element);
+  if (depth == 0) return NULL;
+  CFArrayRef children = NULL;
+  if (AXUIElementCopyAttributeValue(element, kAXChildrenAttribute, (CFTypeRef*)&children) != kAXErrorSuccess
+      || !children) return NULL;
+  AXUIElementRef result = NULL;
+  for (CFIndex i = 0; i < CFArrayGetCount(children) && !result; i++)
+    result = ax_find_identifier(CFArrayGetValueAtIndex(children, i), identifier, depth - 1);
+  CFRelease(children);
+  return result;
+}
+
+// Presses the app's elements with these identifiers in turn (a button, then one in the view it
+// opens), waiting up to 1s for each to appear. Starts from the last one already shown, so a view
+// left open is not toggled closed (e.g. Vorssaint's Dynamic Island, then its volume mixer).
+bool ax_press_identifiers(const char* process, char** identifiers, int count) {
+  pid_t pid = pid_for_process_name(process);
+  if (!pid) return false;
+  AXUIElementRef app = AXUIElementCreateApplication(pid);
+  if (!app) return false;
+  int start = 0;
+  for (int i = count - 1; i > 0 && !start; i--) {
+    AXUIElementRef element = ax_find_identifier(app, identifiers[i], 20);
+    if (element) {
+      start = i;
+      CFRelease(element);
+    }
+  }
+  bool pressed = true;
+  for (int i = start; i < count && pressed; i++) {
+    AXUIElementRef element = NULL;
+    for (int tries = 0; tries < 20 && !element; tries++) {
+      element = ax_find_identifier(app, identifiers[i], 20);
+      if (!element) usleep(50000);
+    }
+    pressed = element && AXUIElementPerformAction(element, kAXPressAction) == kAXErrorSuccess;
+    if (element) CFRelease(element);
+  }
+  CFRelease(app);
+  return pressed;
 }
 
 extern void _SLPSGetFrontProcess(ProcessSerialNumber* psn);
@@ -459,12 +524,13 @@ AXUIElementRef ax_get_front_app() {
 
 int main (int argc, char **argv) {
   if (argc == 1) {
-    printf("Usage: %s [-l | -e | -s id/alias | -c command ]\n", argv[0]);
+    printf("Usage: %s [-l | -e | -s id/alias | -c command | -p app identifier... ]\n", argv[0]);
     printf("  -l          list the front app's menus\n");
     printf("  -e          list menu bar icons, with the name to pass to -s\n");
     printf("  -s id       open the front app's menu at index id\n");
-    printf("  -s alias    open a menu bar icon (com.apple.menuextra.wifi, AlDente, ...)\n");
+    printf("  -s alias    open a menu bar icon (com.apple.menuextra.wifi, AlDente, Vorssaint:CPU, ...)\n");
     printf("  -c command  run a command that opens a menu (e.g. an app's CLI), hiding the menu bar the same way\n");
+    printf("  -p app id.. press an app's elements by AX identifier in turn (Vorssaint notch.activation ...)\n");
     exit(0);
   }
   ax_init();
@@ -475,6 +541,8 @@ int main (int argc, char **argv) {
     CFRelease(app);
   } else if (strcmp(argv[1], "-e") == 0) {
     ax_print_menu_extras();
+  } else if (argc >= 4 && strcmp(argv[1], "-p") == 0) {
+    if (!ax_press_identifiers(argv[2], argv + 3, argc - 3)) return 1;
   } else if (argc == 3 && strcmp(argv[1], "-c") == 0) {
     open_with_hidden_menu_bar(NULL, argv[2]);
   } else if (argc == 3 && strcmp(argv[1], "-s") == 0) {
