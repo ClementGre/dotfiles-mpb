@@ -14,6 +14,4 @@ just
 
 ## Dotfiles are live symlinks
 
-`home.nix` links the shell, skhd, fastfetch and sketchybar configs straight to `files/` in this repo (`mkOutOfStoreSymlink`), so edits apply without a rebuild. Nix rollbacks don't restore them: git is their history. The repo must stay at `~/GitHub/dotfiles-MBP`.
-
-After editing `files/sketchybar/helpers/*.c`, run `just bar` to rebuild the helpers and reload sketchybar.
+`home.nix` links the shell, skhd and fastfetch configs straight to `files/` in this repo (`mkOutOfStoreSymlink`), so edits apply without a rebuild. Nix rollbacks don't restore them: git is their history. The repo must stay at `~/GitHub/dotfiles-MBP`.

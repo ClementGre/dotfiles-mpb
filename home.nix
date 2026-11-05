@@ -26,7 +26,6 @@ in
     ".zlogin".source = link "zsh/.zlogin";
     ".config/fastfetch/config.jsonc".source = link "fastfetch/config.jsonc";
     ".skhdrc".source = link "skhd/.skhdrc";
-    ".config/sketchybar".source = link "sketchybar";
   };
 
   home.sessionVariables = {
@@ -40,7 +39,7 @@ in
   programs.home-manager.enable = true;
 
   # Réglages > Barre des menus > Afficher l'arrière-plan de la barre des menus, so the native
-  # bar doesn't blend into sketchybar when revealed
+  # bar doesn't blend into KuroBar when revealed
   targets.darwin.defaults.NSGlobalDomain.SLSMenuBarUseBlurredAppearance = true;
 
   # macOS 27's Live Activities renderer leaks (2+ GB, 100-200% CPU after a few hours) and lags

@@ -151,7 +151,6 @@
               "texlive"
               "ifstat"
               "ical-buddy"
-              "felixkratz/formulae/sketchybar" # Fully qualified so brew bundle keeps it trusted
               #"openconnect"
               "fileicon" # Change file and apps icons
               "mole" # Mac app uninstall and clean
@@ -340,10 +339,6 @@
           nix-homebrew.darwinModules.nix-homebrew
           {
             #          services = {
-            #            sketchybar = {
-            #              enable = true;
-            #              #package = pkgs.sketchybar;
-            #            };
             #            skhd.enable = true;
             #          };
             nix-homebrew = {

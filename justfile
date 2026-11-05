@@ -26,11 +26,6 @@ icons:
 assoc:
     {{flake}}/scripts/file-associations.sh
 
-# Rebuild sketchybar helpers and reload it
-bar:
-    make -C {{flake}}/files/sketchybar/helpers
-    sketchybar --reload
-
 # Delete unused nix store paths
 gc:
     sudo nix-store --gc
