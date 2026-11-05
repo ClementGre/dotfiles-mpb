@@ -105,6 +105,9 @@
             opam
             swi-prolog
 
+            google-cloud-sdk
+            poppler
+
             # GUI apps
             #audacity
             #blender
@@ -152,8 +155,6 @@
               #"openconnect"
               "fileicon" # Change file and apps icons
               "mole" # Mac app uninstall and clean
-              "poppler"
-              "gcloud"
             ];
             casks = [
               "slack"
