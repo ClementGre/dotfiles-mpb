@@ -46,8 +46,18 @@
       # Opt-in steps, set by the justfile (read at eval time, hence --impure)
       flag = name: builtins.getEnv name == "1";
 
+      # Casks that update themselves: brew installs them once, but never upgrades
+      # them, as its Caskroom version goes stale and it would reinstall an older one
+      selfUpdatingCasks = [
+        "docker-desktop"
+        "figma"
+        "handbrake-app"
+        "libreoffice"
+        "zen"
+      ];
+
       configuration =
-        { pkgs, config, ... }:
+        { pkgs, lib, config, ... }:
         {
           # List packages installed in system profile. To search by name, run:
           # $ nix-env -qaP | grep wget
@@ -142,11 +152,12 @@
               #"openconnect"
               "fileicon" # Change file and apps icons
               "mole" # Mac app uninstall and clean
+              "poppler"
+              "gcloud"
             ];
             casks = [
               "slack"
               "aldente"
-              "docker-desktop"
               "karabiner-elements"
               "the-unarchiver"
               "mountain-duck"
@@ -172,11 +183,11 @@
               "bitwarden"
               #"maccy"
               "windows-app"
+              "vorssaint"
               #"blender"
               "free-ruler"
               "mathpix-snipping-tool"
               #"phoenix"
-              "zen"
               "busycal"
               "hammerspoon"
               "microsoft-auto-update"
@@ -187,7 +198,6 @@
               "qflipper"
               "zoom"
               "coolterm"
-              "handbrake-app"
               "microsoft-powerpoint"
               "rectangle"
               "cyberduck"
@@ -211,11 +221,9 @@
               "yubico-authenticator"
               "finetune"
               "raycast"
-              # Apps that are updated automatically that need brew only for the first installation
               #"zed"
-              #"figma"
-              #"libreoffice"
-            ];
+            ]
+            ++ selfUpdatingCasks;
             masApps = {
               #reMarkableDesktop = 1276493162;
               PixelmatorPro = 1289583905;
@@ -225,7 +233,7 @@
               #ParallelsDesktop = 1085114709;
               Vivid = 6443470555;
               HandMirror = 1502839586;
-              LittleSnitchMini = 1629008763;
+              #LittleSnitchMini = 1629008763;
               Amphetamine = 937984704;
               #BarbeeHideMenuBarItems = 1548711022;
               #ScreenBandit = 1043565969;
@@ -235,6 +243,9 @@
             # Only on `just upgrade`, so a plain `just switch` stays fast
             onActivation.autoUpdate = flag "DOTFILES_BREW_UPGRADE";
             onActivation.upgrade = flag "DOTFILES_BREW_UPGRADE";
+            onActivation.extraEnv = lib.optionalAttrs (flag "DOTFILES_BREW_UPGRADE") {
+              HOMEBREW_BUNDLE_CASK_SKIP = lib.concatStringsSep " " selfUpdatingCasks;
+            };
           };
 
           system.defaults = {
