@@ -24,10 +24,6 @@
       url = "github:homebrew/homebrew-cask";
       flake = false;
     };
-    felixkratz = {
-      url = "github:FelixKratz/homebrew-formulae";
-      flake = false;
-    };
   };
 
   outputs =
@@ -40,7 +36,6 @@
       homebrew-core,
       homebrew-cask,
       home-manager,
-      felixkratz,
     }:
     let
       # Opt-in steps, set by the justfile (read at eval time, hence --impure)
@@ -351,7 +346,6 @@
               taps = {
                 "homebrew/core" = homebrew-core;
                 "homebrew/cask" = homebrew-cask;
-                "FelixKratz/homebrew-formulae" = felixkratz;
               };
 
               # Optional: Enable fully-declarative tap management
