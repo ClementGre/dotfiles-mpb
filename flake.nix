@@ -52,7 +52,6 @@
         "docker-desktop"
         "figma"
         "handbrake-app"
-        "libreoffice"
         "zen"
       ];
 
