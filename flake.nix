@@ -156,6 +156,7 @@
               "mole" # Mac app uninstall and clean
             ];
             casks = [
+              "syncthing-app"
               "slack"
               "aldente"
               "karabiner-elements"
