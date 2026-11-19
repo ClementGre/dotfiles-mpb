@@ -283,7 +283,7 @@
                 #"${pkgs.spotify}/Applications/Spotify.app"
                 "/Applications/Spotify.app"
 
-                "/Applications/Anytype.app"
+                "/Applications/Obsidian.app"
                 "/Applications/BusyCal.app"
                 "/Applications/Microsoft Word.app"
                 "/Applications/Microsoft Excel.app"
