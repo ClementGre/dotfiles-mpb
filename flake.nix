@@ -51,6 +51,7 @@
         "termius"
         "discord"
         "spotify"
+        "aldente"
       ];
 
       configuration =
@@ -180,7 +181,7 @@
               "bitwarden"
               #"maccy"
               "windows-app"
-              "vorssaint"
+              #"vorssaint"
               #"blender"
               "free-ruler"
               "mathpix-snipping-tool"
@@ -229,7 +230,7 @@
               Xcode = 497799835;
               #ParallelsDesktop = 1085114709;
               Vivid = 6443470555;
-              HandMirror = 1502839586;
+              #HandMirror = 1502839586;
               #LittleSnitchMini = 1629008763;
               #Amphetamine = 937984704;
               #BarbeeHideMenuBarItems = 1548711022;
