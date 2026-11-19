@@ -147,7 +147,6 @@
               "mas" # Mac App Store shell control
               "shpotify" # Spotify shell controll
               "tailscale"
-              "texlive"
               "ifstat"
               "ical-buddy"
               #"openconnect"
@@ -219,7 +218,7 @@
               "sf-symbols"
               "losslesscut"
               "yubico-authenticator"
-              "finetune"
+              #"finetune"
               "raycast"
               #"zed"
             ]
@@ -234,7 +233,7 @@
               Vivid = 6443470555;
               HandMirror = 1502839586;
               #LittleSnitchMini = 1629008763;
-              Amphetamine = 937984704;
+              #Amphetamine = 937984704;
               #BarbeeHideMenuBarItems = 1548711022;
               #ScreenBandit = 1043565969;
               #SpoticaMenu = 570549457;
