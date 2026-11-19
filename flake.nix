@@ -48,6 +48,9 @@
         "figma"
         "handbrake-app"
         "zen"
+        "termius"
+        "discord"
+        "spotify"
       ];
 
       configuration =
