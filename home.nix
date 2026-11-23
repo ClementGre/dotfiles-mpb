@@ -14,8 +14,19 @@ in
   home.stateVersion = "25.05"; # Please read the comment before changing.
 
   # Makes sense for user specific applications that shouldn't be available system-wide
-  home.packages = [
+  home.packages = with pkgs; [
+    git-remote-gcrypt # Encrypted git remotes (`gcrypt::` URLs), with the GPG key below
   ];
+
+  # GPG: keys live in ~/.gnupg. The agent asks the passphrase through pinentry-mac's native
+  # dialog (with a "Save in Keychain" option) and caches it for 10 min, up to 2 h
+  programs.gpg.enable = true;
+  services.gpg-agent = {
+    enable = true;
+    pinentry.package = pkgs.pinentry_mac;
+    defaultCacheTtl = 600;
+    maxCacheTtl = 7200;
+  };
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.
